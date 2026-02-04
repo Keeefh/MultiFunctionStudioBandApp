@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import InstrumentCarousel from './InstrumentCarousel';
 
-// Suspended Pouch Navbar - Clean, Simple Design
-export default function ControlHub({ onModeChange, activeMode = 'instruments' }) {
+// Suspended Pouch Navbar with 70-80% expanded panel
+export default function ControlHub({ onModeChange, selectedInstrument, onInstrumentChange, activeMode = 'instruments' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState(activeMode);
 
@@ -14,36 +15,56 @@ export default function ControlHub({ onModeChange, activeMode = 'instruments' })
 
   return (
     <>
-      {/* Main navbar container */}
+      {/* Overlay - Darkens background when open */}
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={handleToggle}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            zIndex: 99,
+            backdropFilter: 'blur(4px)',
+          }}
+        />
+      )}
+
+      {/* Main Panel - 70-80% of screen height */}
       <motion.div
-        initial={{ y: -200 }}
-        animate={{ y: isOpen ? 0 : -140 }}
+        initial={{ y: '-100%' }}
+        animate={{ y: isOpen ? 0 : '-100%' }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
+          height: '75vh',
           zIndex: 100,
           pointerEvents: 'auto',
-          backgroundColor: 'rgba(24, 24, 27, 0.8)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(113, 113, 122, 0.3)',
-          padding: '20px',
+          backgroundColor: 'rgba(24, 24, 27, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '2px solid rgba(113, 113, 122, 0.5)',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          gap: '20px',
+          overflow: 'hidden',
         }}
       >
-        {/* Content: Binary Toggle */}
+        {/* Header with Toggle Buttons */}
         <div
           style={{
+            padding: '20px',
             display: 'flex',
             gap: '8px',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '280px',
+            borderBottom: '1px solid rgba(113, 113, 122, 0.3)',
           }}
         >
           {/* Instruments Button */}
@@ -55,11 +76,12 @@ export default function ControlHub({ onModeChange, activeMode = 'instruments' })
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             style={{
               flex: 1,
-              padding: '10px 20px',
+              maxWidth: '200px',
+              padding: '12px 24px',
               borderRadius: '999px',
               border: 'none',
               color: mode === 'instruments' ? '#fff' : '#a1a1aa',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'color 0.2s ease',
@@ -77,11 +99,12 @@ export default function ControlHub({ onModeChange, activeMode = 'instruments' })
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             style={{
               flex: 1,
-              padding: '10px 20px',
+              maxWidth: '200px',
+              padding: '12px 24px',
               borderRadius: '999px',
               border: 'none',
               color: mode === 'multiplayer' ? '#fff' : '#a1a1aa',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'color 0.2s ease',
@@ -90,6 +113,40 @@ export default function ControlHub({ onModeChange, activeMode = 'instruments' })
             Multiplayer
           </motion.button>
         </div>
+
+        {/* Content Area */}
+        <div
+          style={{
+            flex: 1,
+            overflow: 'auto',
+            display: mode === 'instruments' ? 'flex' : 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {mode === 'instruments' && (
+            <InstrumentCarousel
+              selectedInstrument={selectedInstrument}
+              onInstrumentChange={onInstrumentChange}
+            />
+          )}
+        </div>
+
+        {/* Multiplayer Content (placeholder) */}
+        {mode === 'multiplayer' && (
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#a1a1aa',
+              fontSize: '18px',
+            }}
+          >
+            Multiplayer Panel Coming Soon
+          </div>
+        )}
       </motion.div>
 
       {/* Pouch Handle - Always visible, clickable */}

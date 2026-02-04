@@ -250,46 +250,12 @@ useEffect(() => {
   return (
     <>
       <ControlHub
-        instrumentName={selectedInstrument}
-        userCount={users.length}
-        onQuickChange={() => setSelectedInstrument(prev => prev === 'GUITAR' ? 'PIANO' : 'GUITAR')}
-        onShareInvite={() => { navigator.clipboard?.writeText(window.location.href); alert('Invite copied'); }}
+        selectedInstrument={selectedInstrument}
+        onInstrumentChange={setSelectedInstrument}
+        activeMode={activeMode}
+        onModeChange={setActiveMode}
       />
       <div id="main" className="w-100 vh-100 m-0">
-      {/* Mode & Instrument selector */}
-      <div style={{ padding: '8px', display: 'flex', justifyContent: 'center', gap: '16px', alignItems: 'center' }}>
-        <div>
-          <button
-            onClick={() => setActiveMode('INSTRUMENTS')}
-            style={{ padding: '8px 12px', backgroundColor: activeMode === 'INSTRUMENTS' ? '#333' : '#ddd', color: activeMode === 'INSTRUMENTS' ? '#fff' : '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', marginRight: '8px' }}
-          >
-            Instruments
-          </button>
-          <button
-            onClick={() => setActiveMode('MULTIPLAYER')}
-            style={{ padding: '8px 12px', backgroundColor: activeMode === 'MULTIPLAYER' ? '#333' : '#ddd', color: activeMode === 'MULTIPLAYER' ? '#fff' : '#000', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-          >
-            Multiplayer
-          </button>
-        </div>
-
-        {activeMode === 'INSTRUMENTS' && (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              onClick={() => setSelectedInstrument('PIANO')}
-              style={{ padding: '8px 12px', backgroundColor: selectedInstrument === 'PIANO' ? '#333' : '#ddd', color: selectedInstrument === 'PIANO' ? '#fff' : '#000', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-            >
-              Piano
-            </button>
-            <button
-              onClick={() => setSelectedInstrument('GUITAR')}
-              style={{ padding: '8px 12px', backgroundColor: selectedInstrument === 'GUITAR' ? '#333' : '#ddd', color: selectedInstrument === 'GUITAR' ? '#fff' : '#000', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-            >
-              Guitar
-            </button>
-          </div>
-        )}
-      </div>
 
       {activeMode === 'MULTIPLAYER' ? (
         <div style={{ padding: '16px', height: 'calc(100vh - 64px)', overflow: 'auto' }}>

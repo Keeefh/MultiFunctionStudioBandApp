@@ -1,0 +1,81 @@
+{
+  "name": "my_drummer_react_app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "client": "vite",
+    "server": "nodemon server/server.js",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "lint:fix": "npm run lint -- --fix",
+    "build:visualizer": "tsc && vite build"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "autoprefixer": "^10.4.24",
+    "bootstrap": "^5.3.7",
+    "framer-motion": "^12.31.0",
+    "postcss": "^8.5.6",
+    "react": ">=16.2.0",
+    "react-audio-visualize": "^1.2.0",
+    "react-dom": ">=16.2.0",
+    "socket.io-client": "^4.8.1",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@types/node": "^20.2.1",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard-with-typescript": "^34.0.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "nodemon": "^3.1.11",
+    "path": "^0.12.7",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.2",
+    "vite": "^7.1.2",
+    "vite-plugin-dts": "^2.3.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.2.0",
+    "react-dom": ">=16.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samhirtarif/react-audio-visualize.git"
+  },
+  "keywords": [
+    "audio",
+    "visualize",
+    "visualiser",
+    "visualizer",
+    "waveform",
+    "visualization"
+  ],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/react-audio-visualize.umd.js",
+  "module": "./dist/react-audio-visualize.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/react-audio-visualize.es.js",
+      "require": "./dist/react-audio-visualize.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

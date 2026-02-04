@@ -1,0 +1,34 @@
+.pad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+    aspect-ratio: 1 / 1; /* makes the button perfectly square */
+
+
+  background: linear-gradient(145deg, #2a2a2a, #1c1c1c); /* matte dark surface */
+  color: #8c8c8c;     /* subtle, minimal text */
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.12s ease-in-out;
+  box-shadow: 4px 4px 8px #0f0f0f, -4px -4px 8px #2f2f2f; /* hard square shadows */
+}
+
+/* Hover = subtle lift */
+.pad-btn:hover {
+  background: linear-gradient(145deg, #333, #1a1a1a);
+  color: #b5b5b5;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 6px #0e0e0e, -3px -3px 6px #343434;
+}
+
+/* Active = light-up effect */
+.pad-btn:active {
+  background: linear-gradient(145deg, #1c1c1c, #141414);
+  box-shadow: inset 2px 2px 6px #0c0c0c, inset -2px -2px 6px #2a2a2a;
+  color: #66ffcc; /* faint neon glow text */
+  transform: scale(0.97); /* shrink slightly to simulate press */
+}

@@ -1,0 +1,365 @@
+.guitar-engine {
+  padding: 20px;
+  color: white;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.guitar-engine h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.guitar-engine h3 {
+  font-size: 1.2rem;
+  margin: 15px 0 10px 0;
+  border-bottom: 2px solid #555;
+  padding-bottom: 5px;
+}
+
+/* Guitar Visual */
+.guitar-visual-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.guitar-svg {
+  max-width: 100%;
+  height: auto;
+  transition: filter 0.1s ease;
+}
+
+/* String vibration animations */
+@keyframes string-vibrate {
+  0%, 100% { 
+    transform: translateY(0) scaleY(1);
+  }
+  25% { 
+    transform: translateY(-3px) scaleY(1.02);
+  }
+  50% { 
+    transform: translateY(0) scaleY(0.98);
+  }
+  75% { 
+    transform: translateY(3px) scaleY(1.02);
+  }
+}
+
+.guitar-svg #string-1.vibrating,
+.guitar-svg #string-2.vibrating,
+.guitar-svg #string-3.vibrating,
+.guitar-svg #string-4.vibrating,
+.guitar-svg #string-5.vibrating,
+.guitar-svg #string-6.vibrating {
+  animation: string-vibrate 0.15s ease-in-out;
+  transform-origin: center;
+  stroke: #FFE066;
+  filter: drop-shadow(0 0 3px rgba(255, 224, 102, 0.8));
+}
+
+/* Chord Boards */
+.chord-boards-container {
+  margin-bottom: 30px;
+}
+
+.chord-board {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.chord-board.active {
+  border-color: #00ff00;
+  background: rgba(0, 255, 0, 0.2);
+}
+
+.board-label {
+  font-weight: bold;
+  min-width: 80px;
+}
+
+.key-button, .chord-button {
+  padding: 8px 15px;
+  background: #444;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.key-button:hover, .chord-button:hover {
+  background: #555;
+}
+
+.key-input, .chord-select {
+  padding: 8px;
+  background: #333;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.chord-select {
+  min-width: 100px;
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  padding: 8px 15px;
+  background: #444;
+  color: white;
+  border: 2px solid #666;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.mode-toggle:hover {
+  background: #555;
+}
+
+.mode-toggle.chord {
+  border-color: #4a90e2;
+  background: #2a5080;
+}
+
+.mode-toggle.note {
+  border-color: #e2a44a;
+  background: #805a2a;
+}
+
+/* Chord Search Input */
+.chord-search-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.chord-search-input {
+  padding: 8px 12px;
+  background: #333;
+  color: white;
+  border: 2px solid #4a90e2;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  outline: none;
+  min-width: 140px;
+}
+
+.chord-search-input::placeholder {
+  color: #888;
+}
+
+.chord-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 300px;
+}
+
+.chord-suggestion {
+  padding: 4px 10px;
+  background: #444;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+
+.chord-suggestion:hover {
+  background: #4a90e2;
+  border-color: #6ab0ff;
+}
+
+/* Octave Control */
+.octave-control {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #333;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid #555;
+}
+
+.octave-btn {
+  width: 24px;
+  height: 24px;
+  background: #555;
+  color: white;
+  border: 1px solid #777;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.octave-btn:hover:not(:disabled) {
+  background: #666;
+}
+
+.octave-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.octave-display {
+  font-size: 0.85rem;
+  color: #aaa;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Arpeggio Toggle */
+.arpeggio-toggle {
+  padding: 6px 12px;
+  background: #444;
+  color: white;
+  border: 2px solid #666;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.arpeggio-toggle:hover {
+  background: #555;
+}
+
+.arpeggio-toggle.active {
+  border-color: #9b4ae2;
+  background: #5a2a80;
+}
+
+/* Strum Speed Slider */
+.strum-speed-container {
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+  flex: 1;
+}
+
+.strum-speed-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.speed-label-text {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.speed-value {
+  font-size: 0.8rem;
+  color: #aaa;
+  min-width: 35px;
+  text-align: center;
+}
+
+.strum-speed-slider {
+  flex: 1;
+  height: 6px;
+  background: linear-gradient(to right, #4a90e2, #e24a4a);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.strum-speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border: 2px solid #666;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.strum-speed-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.strum-speed-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border: 2px solid #666;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.strum-speed-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Strum Boards */
+.strum-boards-container {
+  margin-top: 20px;
+}
+
+.strum-board {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin: 8px 0;
+  background: rgba(255, 255, 0, 0.1);
+  border-radius: 8px;
+  border: 2px solid #ff0;
+}
+
+.strum-label {
+  font-weight: bold;
+  min-width: 120px;
+}
+
+.strum-button {
+  padding: 8px 15px;
+  background: #664;
+  color: white;
+  border: 1px solid #aa6;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.strum-button:hover {
+  background: #775;
+}
+
+.strum-input {
+  padding: 8px;
+  background: #333;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 5px;
+  min-width: 150px;
+}

@@ -1,0 +1,214 @@
+.multiplayer-panel {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.multiplayer-panel h2 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.status-dot.connected {
+    background: #4ade80;
+    box-shadow: 0 0 10px #4ade80;
+}
+
+.status-dot.disconnected {
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.join-room-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.join-room-section input {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+.join-room-section input:focus {
+    outline: 2px solid #4ade80;
+    background: white;
+}
+
+.join-room-section button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    background: #4ade80;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.join-room-section button:hover {
+    background: #22c55e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
+}
+
+.room-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.room-details {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.room-details p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.users-list {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.users-list h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.users-list .users-hint {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.users-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.users-list li {
+    padding: 8px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.users-list li:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.users-list li.editing {
+    transform: scale(1.01);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.user-volume-tag {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.25);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.user-volume-editor {
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-volume-editor input[type="range"] {
+    flex: 1;
+}
+
+.user-volume-editor button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    background: #4ade80;
+    color: #0b1120;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.user-volume-editor button:hover {
+    background: #22c55e;
+}
+
+.user-volume-value {
+    width: 48px;
+    text-align: right;
+    font-weight: 600;
+}
+
+.leave-button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    background: #ef4444;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.leave-button:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}

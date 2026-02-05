@@ -447,10 +447,10 @@ useEffect(() => {
             borderBottomColor: '#111',
             borderRightColor: '#111',
             borderRadius: '8px',
-            padding: '16px',
+            padding: '8px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '8px',
           }}>
             <h3 style={{
               color: '#00ff99',
@@ -474,10 +474,10 @@ useEffect(() => {
               justifyContent: 'center',
             }}>
               <div style={{
-                width: '80%',
-                height: '80%',
+                width: '100%',
+                height: '100%',
               }}>
-                <LiveAudioVisualizer analyser={analyser} width={600} height={100} />
+                <LiveAudioVisualizer analyser={analyser} width="100%" height="100%" />
               </div>
             </div>
           </div>

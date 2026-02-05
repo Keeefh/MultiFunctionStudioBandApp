@@ -35,7 +35,30 @@ export const LiveAudioVisualizer = forwardRef<HTMLCanvasElement, LiveAudioVisual
   ) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);//the canvas element that will be used to display the audio visualizer
     const animationRef = useRef<number| null>(null);//the animation frame that will be used to update the audio visualizer
+    const containerRef = useRef<HTMLDivElement>(null);
     useImperativeHandle(ref, () => canvasRef.current!);
+
+    // Update canvas resolution when container size changes (for responsive 100% sizing)
+    useEffect(() => {
+      if (!canvasRef.current || !containerRef.current) return;
+      
+      const updateCanvasSize = () => {
+        if (!canvasRef.current || !containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0 && 
+            (canvasRef.current.width !== Math.ceil(rect.width) || 
+             canvasRef.current.height !== Math.ceil(rect.height))) {
+          canvasRef.current.width = Math.ceil(rect.width);
+          canvasRef.current.height = Math.ceil(rect.height);
+        }
+      };
+      
+      updateCanvasSize();
+      const resizeObserver = new ResizeObserver(updateCanvasSize);
+      resizeObserver.observe(containerRef.current);
+      
+      return () => resizeObserver.disconnect();
+    }, []);
 
     useEffect(() => {
       if (!canvasRef.current ) return;
@@ -43,10 +66,14 @@ export const LiveAudioVisualizer = forwardRef<HTMLCanvasElement, LiveAudioVisual
 
       const render = () => {
         if (!canvasRef.current || !analyser ) return;
+        // Use actual canvas dimensions for responsive sizing
+        const canvasWidth = canvasRef.current.width;
+        const canvasHeight = canvasRef.current.height;
+        
         const barsData: dataPoint[] = calculateLiveBarData(
             analyser,
-           Number(height),
-            Number(width),
+            canvasHeight,
+            canvasWidth,
              barWidth,
               gap);
 
@@ -66,15 +93,17 @@ export const LiveAudioVisualizer = forwardRef<HTMLCanvasElement, LiveAudioVisual
         if (animationRef.current) cancelAnimationFrame(animationRef.current);
       
       };
-    }, [analyser,height, width, barWidth, gap, backgroundColor, barColor]);
+    }, [analyser, barWidth, gap, backgroundColor, barColor]);
 
     return (
-      <canvas
-        ref={canvasRef}
-        width={typeof width === "number" ? width : undefined}
-        height={typeof height === "number" ? height : undefined}
-        style={{ border: "1px solid black", ...style, width: typeof width === "string" ? width : undefined, height: typeof height === "string" ? height : undefined }}
-      />
+      <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex' }}>
+        <canvas
+          ref={canvasRef}
+          width={typeof width === "number" ? width : undefined}
+          height={typeof height === "number" ? height : undefined}
+          style={{ display: 'block', flex: 1, ...style, width: typeof width === "string" ? width : undefined, height: typeof height === "string" ? height : undefined }}
+        />
+      </div>
     );
   }
 );

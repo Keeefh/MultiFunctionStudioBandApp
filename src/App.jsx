@@ -385,7 +385,7 @@ useEffect(() => {
             display: 'flex',
             flexDirection: 'column',
             gap: '12px',
-            overflow: 'hidden',
+            overflow: 'auto',
           }}>
             <h3 style={{
               color: '#00ffff',

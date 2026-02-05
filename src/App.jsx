@@ -25,8 +25,8 @@ function App() {
   const[currentVisualizedSample,setCurrentVisualizedSample]=useState(null)
   const currentVisualizedAudioRef = useRef(null);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0); 
-  const [selectedInstrument, setSelectedInstrument] = useState('PIANO');
-  const [activeMode, setActiveMode] = useState('INSTRUMENTS');
+  const [selectedInstrument, setSelectedInstrument] = useState('PADS');
+  const [activeMode, setActiveMode] = useState('instruments');
 
   // Multiplayer/socket state
   const [socket, setSocket] = useState(null);
@@ -286,7 +286,7 @@ useEffect(() => {
             isVisible={true}
           />
         </div>
-      ) : (
+      ) : selectedInstrument === 'PADS' ? (
         <div className="row w-100 vh-100 m-0">
           <div className="d-flex align-items-center justify-content-center col-6 bg-primary" id="keyboard-section">
             <div ref={padButtonRef} className="row row-cols-3 gy-2 w-100 h-75" id="pad-page">
@@ -336,6 +336,10 @@ useEffect(() => {
               </div>
             </div>
           </div>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: '#fff', fontSize: '18px' }}>
+          Select an instrument from the Control Hub
         </div>
       )}
     </div>

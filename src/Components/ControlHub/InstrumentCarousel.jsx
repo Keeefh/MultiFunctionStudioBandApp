@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 // Instrument Carousel with Floating/3D Parallax Effect
 export default function InstrumentCarousel({ selectedInstrument, onInstrumentChange }) {
   const instruments = [
-    { id: 'PIANO', name: 'Piano', icon: '/Piano.png' },
     { id: 'GUITAR', name: 'Guitar', icon: '/guitarMenuIcon.png' },
     { id: 'PADS', name: 'Pads', icon: '/PadSampleIcon.png' },
   ];
@@ -130,8 +129,8 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
               ease: 'easeInOut',
             }}
             style={{
-              width: '280px',
-              height: '280px',
+              width: '340px',
+              height: '340px',
               objectFit: 'contain',
               filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4))',
             }}
@@ -144,7 +143,7 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
             style={{
               position: 'absolute',
               bottom: '-40px',
-              width: '280px',
+              width: '340px',
               height: '40px',
               borderRadius: '50%',
               background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%)',

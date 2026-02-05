@@ -5,7 +5,7 @@ import InstrumentCarousel from './InstrumentCarousel';
 // Suspended Pouch Navbar with 70-80% expanded panel
 export default function ControlHub({ onModeChange, selectedInstrument, onInstrumentChange, activeMode = 'instruments' }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState(activeMode);
+  const [mode, setMode] = useState('instruments');
 
   const handleToggle = () => setIsOpen(!isOpen);
   const handleMode = (m) => {

@@ -381,10 +381,10 @@ useEffect(() => {
             borderBottomColor: '#111',
             borderRightColor: '#111',
             borderRadius: '8px',
-            padding: '16px',
+            padding: '8px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '8px',
             overflow: 'auto',
           }}>
             <h3 style={{
@@ -403,14 +403,14 @@ useEffect(() => {
               overflow: 'auto',
               background: 'rgba(0, 0, 0, 0.4)',
               border: '2px inset #222',
-              padding: '12px',
+              padding: '0',
               borderRadius: '4px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
               <div style={{
-                width: '75%',
+                width: '100%',
                 height: '100%',
                 overflow: 'auto',
               }}>

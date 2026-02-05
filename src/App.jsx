@@ -287,9 +287,58 @@ useEffect(() => {
           />
         </div>
       ) : selectedInstrument === 'PADS' ? (
-        <div className="row w-100 vh-100 m-0">
-          <div className="d-flex align-items-center justify-content-center col-6 bg-primary" id="keyboard-section">
-            <div ref={padButtonRef} className="row row-cols-3 gy-2 w-100 h-75" id="pad-page">
+        <div style={{
+          width: '100%',
+          height: '100vh',
+          background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)',
+          padding: '16px',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
+          border: '8px outset #444',
+          borderTopColor: '#888',
+          borderLeftColor: '#888',
+          borderBottomColor: '#111',
+          borderRightColor: '#111',
+          boxShadow: 'inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.5)',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gridTemplateRows: '1fr 1fr',
+          gap: '16px',
+        }}>
+          {/* LEFT: Pad Grid Device */}
+          <div id="keyboard-section" style={{
+            gridColumn: '1',
+            gridRow: '1 / 3',
+            background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
+            border: '4px outset #555',
+            borderTopColor: '#999',
+            borderLeftColor: '#999',
+            borderBottomColor: '#111',
+            borderRightColor: '#111',
+            borderRadius: '8px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            overflow: 'auto',
+          }}>
+            <h3 style={{
+              color: '#ffaa00',
+              fontFamily: 'Courier New, monospace',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              textShadow: '0 0 8px rgba(255, 170, 0, 0.6)',
+              margin: '0 0 8px 0',
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+            }}>DRUM PADS</h3>
+            
+            <div ref={padButtonRef} style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '8px',
+              flex: 1,
+            }} id="pad-page">
               {Array.from({ length: buttonKeyIndex }).map((_, index) => (
                 <PadButton
                   padButtonRef={padButtonRef}
@@ -300,40 +349,114 @@ useEffect(() => {
                 />
               ))}
             </div>
+            
             {isAssigningSample && selectedSample && (
-              <div style={{ color: 'red', fontWeight: 'bold', marginTop: '10px' }}>
-                Click a PadButton to assign "{selectedSample.name}"
+              <div style={{
+                color: '#ff5555',
+                fontFamily: 'Courier New, monospace',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                textShadow: '0 0 8px rgba(255, 85, 85, 0.6)',
+                marginTop: '8px',
+                textAlign: 'center',
+              }}>
+                ▸ ASSIGN: {selectedSample.name}
               </div>
             )}
           </div>
 
-          <div className="col-6 bg-secondary" id="instrument-section">
-            <div id="instrument-page" className="d-flex flex-column w-100 h-100">
-              <div id="piano-page">
-                <img className="w-100" src="Piano.png" alt="Piano" />
-                <LibraryBrowser
-                  libraryRef={noteBook}
-                  byKit={byKit}
-                  kits={kits}
-                  setKits={setKits}
-                  currentKit={currentKit}
-                  setCurrentKit={setCurrentKit}
-                  selectedFiles={selectedFiles}
-                  setSelectedFiles={setSelectedFiles}
-                  picked={picked}
-                  setPicked={setPicked}
-                  selectedSamples={selectedSamples}
-                  setSelectedSamples={setSelectedSamples}
-                  isAssigningSample={isAssigningSample}
-                  setIsAssigningSample={setIsAssigningSample}
-                  selectedSample={selectedSample}
-                  setSelectedSample={setSelectedSample}
-                />
-              </div>
-              <div id="wave-page">
-                <LiveAudioVisualizer analyser={analyser} width={690} height={200} />
+          {/* TOP-RIGHT: Library Browser Device */}
+          <div id="instrument-section" style={{
+            gridColumn: '2 / 4',
+            gridRow: '1',
+            background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
+            border: '4px outset #555',
+            borderTopColor: '#999',
+            borderLeftColor: '#999',
+            borderBottomColor: '#111',
+            borderRightColor: '#111',
+            borderRadius: '8px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            overflow: 'auto',
+          }}>
+            <h3 style={{
+              color: '#00ffff',
+              fontFamily: 'Courier New, monospace',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              textShadow: '0 0 8px rgba(0, 255, 255, 0.6)',
+              margin: '0 0 8px 0',
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+            }}>SAMPLE LIBRARY</h3>
+            
+            <div style={{
+              flex: 1,
+              overflow: 'auto',
+              background: 'rgba(0, 0, 0, 0.4)',
+              border: '2px inset #222',
+              padding: '8px',
+              borderRadius: '4px',
+            }}>
+              <LibraryBrowser
+                libraryRef={noteBook}
+                byKit={byKit}
+                kits={kits}
+                setKits={setKits}
+                currentKit={currentKit}
+                setCurrentKit={setCurrentKit}
+                selectedFiles={selectedFiles}
+                setSelectedFiles={setSelectedFiles}
+                picked={picked}
+                setPicked={setPicked}
+                selectedSamples={selectedSamples}
+                setSelectedSamples={setSelectedSamples}
+                isAssigningSample={isAssigningSample}
+                setIsAssigningSample={setIsAssigningSample}
+                selectedSample={selectedSample}
+                setSelectedSample={setSelectedSample}
+              />
+            </div>
+          </div>
 
-              </div>
+          {/* BOTTOM-RIGHT: Audio Visualizer Device */}
+          <div id="wave-page" style={{
+            gridColumn: '2 / 4',
+            gridRow: '2',
+            background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
+            border: '4px outset #555',
+            borderTopColor: '#999',
+            borderLeftColor: '#999',
+            borderBottomColor: '#111',
+            borderRightColor: '#111',
+            borderRadius: '8px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+          }}>
+            <h3 style={{
+              color: '#00ff99',
+              fontFamily: 'Courier New, monospace',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              textShadow: '0 0 8px rgba(0, 255, 153, 0.6)',
+              margin: '0',
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+            }}>SPECTRUM ANALYZER</h3>
+            
+            <div style={{
+              flex: 1,
+              background: 'rgba(0, 30, 20, 0.6)',
+              border: '2px inset #001a0f',
+              borderRadius: '4px',
+              overflow: 'hidden',
+            }}>
+              <LiveAudioVisualizer analyser={analyser} width={800} height={120} />
             </div>
           </div>
         </div>

@@ -1,0 +1,142 @@
+/* Y2K Retro Library Browser Styling */
+
+#library-browser-container {
+  color: #00ffff;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+}
+
+#library-browser-container button,
+#library-browser-container input[type="button"],
+#library-browser-container input[type="file"] {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #1a4d4d 0%, #0d2626 100%);
+  border: 2px outset #00ffff;
+  border-top-color: #00ffff;
+  border-left-color: #00ffff;
+  border-bottom-color: #004d4d;
+  border-right-color: #004d4d;
+  color: #00ffff;
+  padding: 6px 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.5);
+  transition: all 0.1s;
+  margin: 4px;
+}
+
+#library-browser-container button:hover,
+#library-browser-container input[type="button"]:hover {
+  background: linear-gradient(135deg, #2a7d7d 0%, #1d4d4d 100%);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+#library-browser-container button:active,
+#library-browser-container input[type="button"]:active {
+  border-style: inset;
+  transform: scale(0.98);
+  box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Kit sections */
+#library-browser-container .kit-section {
+  border: 2px outset #ffaa00;
+  border-top-color: #ffff00;
+  border-left-color: #ffff00;
+  border-bottom-color: #664400;
+  border-right-color: #664400;
+  margin: 8px 0;
+  padding: 8px;
+  background: rgba(50, 25, 0, 0.3);
+  border-radius: 2px;
+}
+
+#library-browser-container .kit-name {
+  color: #ffaa00;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(255, 170, 0, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Samples list */
+#library-browser-container .sample-item {
+  border: 1px solid #00ff99;
+  margin: 4px 0;
+  padding: 4px;
+  background: rgba(0, 50, 25, 0.2);
+  color: #00ff99;
+  text-shadow: 0 0 3px rgba(0, 255, 153, 0.4);
+}
+
+#library-browser-container .sample-name {
+  font-weight: bold;
+  color: #00ff99;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Checkboxes */
+#library-browser-container input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  cursor: pointer;
+  accent-color: #00ffff;
+}
+
+/* Input fields */
+#library-browser-container input[type="text"],
+#library-browser-container textarea,
+#library-browser-container select {
+  background: rgba(0, 0, 0, 0.6);
+  color: #00ffff;
+  border: 2px inset #333;
+  padding: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  text-shadow: 0 0 2px rgba(0, 255, 255, 0.3);
+}
+
+#library-browser-container input[type="text"]:focus,
+#library-browser-container textarea:focus,
+#library-browser-container select:focus {
+  outline: none;
+  box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.3), 0 0 8px rgba(0, 255, 255, 0.2);
+  color: #00ffcc;
+}
+
+/* Status text */
+#library-browser-container .status-text {
+  color: #ff5555;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(255, 85, 85, 0.5);
+  text-transform: uppercase;
+}
+
+#library-browser-container .status-success {
+  color: #00ff99;
+  text-shadow: 0 0 4px rgba(0, 255, 153, 0.5);
+}
+
+/* Headings */
+#library-browser-container h3,
+#library-browser-container h4 {
+  color: #ffaa00;
+  text-shadow: 0 0 4px rgba(255, 170, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 8px 0 4px 0;
+  font-size: 11px;
+}
+
+/* Dividers */
+#library-browser-container hr {
+  border: none;
+  border-top: 1px solid rgba(0, 255, 255, 0.3);
+  margin: 8px 0;
+}

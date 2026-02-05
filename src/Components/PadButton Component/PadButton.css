@@ -5,6 +5,8 @@
   flex-direction: column;
   width: 100%;
   aspect-ratio: 1 / 1;
+  min-width: 0;
+  min-height: 0;
   
   /* Y2K Beveled 3D Effect */
   background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
@@ -16,7 +18,7 @@
   
   color: #00ff99;
   font-family: 'Courier New', monospace;
-  font-size: 0.75rem;
+  font-size: clamp(0.5rem, 2vw, 0.75rem);
   font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -55,4 +57,28 @@
     inset -2px -2px 4px rgba(255, 255, 255, 0.1),
     0 0 16px rgba(0, 255, 153, 0.9),
     0 0 32px rgba(0, 255, 153, 0.5);
+}
+
+/* Keyboard press animation */
+.pad-btn.keyboard-pressed {
+  background: linear-gradient(135deg, #00ffaa 0%, #00cc88 100%);
+  color: #000;
+  text-shadow: none;
+  border-style: inset;
+  transform: scale(0.95) translateY(1px);
+  box-shadow: 
+    inset 2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.1),
+    0 0 16px rgba(0, 255, 153, 0.9),
+    0 0 32px rgba(0, 255, 153, 0.5);
+  animation: keyboardPulse 0.15s ease-out;
+}
+
+@keyframes keyboardPulse {
+  0% {
+    transform: scale(0.95) translateY(1px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
 }

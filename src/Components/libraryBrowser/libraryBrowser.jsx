@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAudio } from "../Audioloader_Component/Getaudio";
+import "./libraryBrowser.css";
 
 const uploadSamples = async (fileArray, backendUrl) => {
   const formData = new FormData()
@@ -253,7 +254,7 @@ const LibraryBrowser = ({
     };
 
     return (
-        <div ref={libraryRef} style={{ width: "100%", display: "flex", gap: "20px" }}>
+        <div id="library-browser-container" ref={libraryRef} style={{ width: "100%", display: "flex", gap: "12px", fontSize: "11px" }}>
             {/* File/Folder Picker */}
             <div style={{ border: "1px solid #ccc", padding: "12px", width: "200px" }}>
                 <h3>Select Files or Folders</h3>

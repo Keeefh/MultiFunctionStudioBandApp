@@ -232,8 +232,16 @@ useEffect(() => {
   const key = (e.key || '').toLowerCase();
     const idx = buttonKey.indexOf(key);
     if (idx !== -1) {
-    void   handlePadButtonClick(idx);
-    e.preventDefault
+      // Trigger visual feedback for keyboard press
+      const padButtons = document.querySelectorAll('.pad-btn');
+      if (padButtons[idx]) {
+        padButtons[idx].classList.add('keyboard-pressed');
+        setTimeout(() => {
+          padButtons[idx].classList.remove('keyboard-pressed');
+        }, 150);
+      }
+      void handlePadButtonClick(idx);
+      e.preventDefault
     }
    }  
   
@@ -291,44 +299,38 @@ useEffect(() => {
           width: '100%',
           height: '100vh',
           background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)',
-          padding: '16px',
+          padding: '0',
           boxSizing: 'border-box',
           overflow: 'hidden',
-          border: '8px outset #444',
-          borderTopColor: '#888',
-          borderLeftColor: '#888',
-          borderBottomColor: '#111',
-          borderRightColor: '#111',
-          boxShadow: 'inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.5)',
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
+          gridTemplateColumns: '1.8fr 0.6fr 0.6fr',
           gridTemplateRows: '1fr 1fr',
-          gap: '16px',
+          gap: '12px',
         }}>
           {/* LEFT: Pad Grid Device */}
           <div id="keyboard-section" style={{
             gridColumn: '1',
             gridRow: '1 / 3',
             background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-            border: '4px outset #555',
+            border: '6px outset #555',
             borderTopColor: '#999',
             borderLeftColor: '#999',
             borderBottomColor: '#111',
             borderRightColor: '#111',
-            borderRadius: '8px',
-            padding: '16px',
+            borderRadius: '4px',
+            padding: '12px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
-            overflow: 'auto',
+            gap: '8px',
+            overflow: 'hidden',
           }}>
             <h3 style={{
               color: '#ffaa00',
               fontFamily: 'Courier New, monospace',
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: 'bold',
               textShadow: '0 0 8px rgba(255, 170, 0, 0.6)',
-              margin: '0 0 8px 0',
+              margin: '0 0 4px 0',
               textTransform: 'uppercase',
               letterSpacing: '2px',
             }}>DRUM PADS</h3>
@@ -337,7 +339,10 @@ useEffect(() => {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '8px',
-              flex: 1,
+              aspectRatio: '1 / 1',
+              width: '100%',
+              maxWidth: '100%',
+              overflow: 'hidden',
             }} id="pad-page">
               {Array.from({ length: buttonKeyIndex }).map((_, index) => (
                 <PadButton
@@ -380,7 +385,7 @@ useEffect(() => {
             display: 'flex',
             flexDirection: 'column',
             gap: '12px',
-            overflow: 'auto',
+            overflow: 'hidden',
           }}>
             <h3 style={{
               color: '#00ffff',
@@ -398,27 +403,36 @@ useEffect(() => {
               overflow: 'auto',
               background: 'rgba(0, 0, 0, 0.4)',
               border: '2px inset #222',
-              padding: '8px',
+              padding: '12px',
               borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}>
-              <LibraryBrowser
-                libraryRef={noteBook}
-                byKit={byKit}
-                kits={kits}
-                setKits={setKits}
-                currentKit={currentKit}
-                setCurrentKit={setCurrentKit}
-                selectedFiles={selectedFiles}
-                setSelectedFiles={setSelectedFiles}
-                picked={picked}
-                setPicked={setPicked}
-                selectedSamples={selectedSamples}
-                setSelectedSamples={setSelectedSamples}
-                isAssigningSample={isAssigningSample}
-                setIsAssigningSample={setIsAssigningSample}
-                selectedSample={selectedSample}
-                setSelectedSample={setSelectedSample}
-              />
+              <div style={{
+                width: '75%',
+                height: '100%',
+                overflow: 'auto',
+              }}>
+                <LibraryBrowser
+                  libraryRef={noteBook}
+                  byKit={byKit}
+                  kits={kits}
+                  setKits={setKits}
+                  currentKit={currentKit}
+                  setCurrentKit={setCurrentKit}
+                  selectedFiles={selectedFiles}
+                  setSelectedFiles={setSelectedFiles}
+                  picked={picked}
+                  setPicked={setPicked}
+                  selectedSamples={selectedSamples}
+                  setSelectedSamples={setSelectedSamples}
+                  isAssigningSample={isAssigningSample}
+                  setIsAssigningSample={setIsAssigningSample}
+                  selectedSample={selectedSample}
+                  setSelectedSample={setSelectedSample}
+                />
+              </div>
             </div>
           </div>
 
@@ -455,8 +469,16 @@ useEffect(() => {
               border: '2px inset #001a0f',
               borderRadius: '4px',
               overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}>
-              <LiveAudioVisualizer analyser={analyser} width={800} height={120} />
+              <div style={{
+                width: '80%',
+                height: '80%',
+              }}>
+                <LiveAudioVisualizer analyser={analyser} width={600} height={100} />
+              </div>
             </div>
           </div>
         </div>

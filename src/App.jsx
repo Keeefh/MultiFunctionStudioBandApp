@@ -28,6 +28,7 @@ function App() {
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0); 
   const [selectedInstrument, setSelectedInstrument] = useState('PADS');
   const selectedInstrumentRef = useRef(selectedInstrument); // Ref to track current instrument
+  const handlePadClickRef = useRef(null); // Ref to store latest handlePadButtonClick
   const [activeMode, setActiveMode] = useState('instruments');
 
   // Multiplayer/socket state
@@ -337,20 +338,19 @@ useEffect(() => {
   const buttonKey = ['t','y','u','g','h','j','v','b','n']
   const buttonKeyIndex = buttonKey.length;
 
-  // Keep ref in sync with state
+  // Keep refs in sync with latest values
   useEffect(() => {
     selectedInstrumentRef.current = selectedInstrument;
   }, [selectedInstrument]);
 
-  // Pad keyboard handler - only active when PADS is selected
   useEffect(() => {
-    // Don't attach listener at all if not on PADS
-    if (selectedInstrument !== 'PADS') {
-      return; // No listener attached, no cleanup needed
-    }
+    handlePadClickRef.current = handlePadButtonClick;
+  }, [handlePadButtonClick]);
 
+  // Pad keyboard handler - attached ONCE, checks refs for current state
+  useEffect(() => {
     const onKeyDown = (e) => {
-      // Double-check with ref (safety net for race conditions)
+      // Check ref for current instrument (always up-to-date)
       if (selectedInstrumentRef.current !== 'PADS') return;
 
       const active = document.activeElement;
@@ -368,7 +368,10 @@ useEffect(() => {
             padButtons[idx].classList.remove('keyboard-pressed');
           }, 150);
         }
-        void handlePadButtonClick(idx);
+        // Call via ref to always get latest function
+        if (handlePadClickRef.current) {
+          void handlePadClickRef.current(idx);
+        }
         e.preventDefault();
       }
     };
@@ -377,7 +380,7 @@ useEffect(() => {
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [selectedInstrument, buttonKey, handlePadButtonClick]);
+  }, []); // Empty dependency array - listener attached once, never re-attached
 
   if (!byKit || Object.keys(byKit).length === 0) {
     return <div>Loading...</div>;

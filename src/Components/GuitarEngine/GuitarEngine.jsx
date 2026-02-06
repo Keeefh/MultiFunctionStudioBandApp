@@ -4,8 +4,13 @@ import './GuitarEngine.css';
 
 function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurrentPlaybackTime, currentVisualizedAudioRef, socket, roomId, username, userVolumes = {}, isVisible = true }) {
 
-  // Ref to track visibility for keyboard handler (avoids stale closure)
+  // Refs to track values for keyboard handler (avoids stale closure)
   const isVisibleRef = useRef(isVisible);
+  const chordBoardsRef = useRef(chordBoards);
+  const strumDownKeyRef = useRef(strumDownKey);
+  const strumUpKeyRef = useRef(strumUpKey);
+  const strumActiveChordRef = useRef(null);
+  const playNoteRef = useRef(null);
 
   // WebAudioFont player refs
   const playerRef = useRef(null);
@@ -434,21 +439,36 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
     setPendingRemoteCount(0);
   }, [guitarReady, performStrum]);
 
-  // Keep ref in sync with isVisible prop
+  // Keep refs in sync with latest values
   useEffect(() => {
     isVisibleRef.current = isVisible;
   }, [isVisible]);
 
-  // Keyboard handler: left-hand chord selection, right-hand strumming
-  // Only active when guitar is visible
   useEffect(() => {
-    // Don't attach listener at all if guitar is not visible
-    if (!isVisible) {
-      return; // No listener attached, no cleanup needed
-    }
+    chordBoardsRef.current = chordBoards;
+  }, [chordBoards]);
 
+  useEffect(() => {
+    strumDownKeyRef.current = strumDownKey;
+  }, [strumDownKey]);
+
+  useEffect(() => {
+    strumUpKeyRef.current = strumUpKey;
+  }, [strumUpKey]);
+
+  useEffect(() => {
+    strumActiveChordRef.current = strumActiveChord;
+  }, [strumActiveChord]);
+
+  useEffect(() => {
+    playNoteRef.current = playNote;
+  }, [playNote]);
+
+  // Keyboard handler: left-hand chord selection, right-hand strumming
+  // Attached ONCE, checks refs for current state
+  useEffect(() => {
     const onKeyDown = (e) => {
-      // Double-check with ref (safety net for race conditions)
+      // Check ref for current visibility (always up-to-date)
       if (!isVisibleRef.current) return;
 
       // Ignore if user is typing in an input field
@@ -458,34 +478,35 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
       }
 
       const key = (e.key || '').toLowerCase();
+      const boards = chordBoardsRef.current;
 
       // Left-hand chord/note selection
-      const idx = chordBoards.findIndex(b => b.key === key);
+      const idx = boards.findIndex(b => b.key === key);
       if (idx !== -1) {
         setActiveChordIndex(idx);
-        console.log('Active board:', chordBoards[idx].chord, 'mode:', chordBoards[idx].mode, 'oct:', chordBoards[idx].octave);
+        console.log('Active board:', boards[idx].chord, 'mode:', boards[idx].mode, 'oct:', boards[idx].octave);
 
         // If note mode, play immediately (no strum needed)
-        if (chordBoards[idx].mode === 'note') {
-          playNote(chordBoards[idx].chord, chordBoards[idx].octave);
+        if (boards[idx].mode === 'note' && playNoteRef.current) {
+          playNoteRef.current(boards[idx].chord, boards[idx].octave);
         }
         return;
       }
 
       // Right-hand strum keys
-      if (key === strumDownKey) {
-        strumActiveChord('down');
+      if (key === strumDownKeyRef.current && strumActiveChordRef.current) {
+        strumActiveChordRef.current('down');
         return;
       }
-      if (key === strumUpKey) {
-        strumActiveChord('up');
+      if (key === strumUpKeyRef.current && strumActiveChordRef.current) {
+        strumActiveChordRef.current('up');
         return;
       }
     };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isVisible, chordBoards, activeChordIndex, strumDownKey, strumUpKey, audioCtx]);
+  }, []); // Empty dependency array - listener attached once
 
   // Update chord for a specific board
   const updateChordBoard = (index, newKey, newChord, newStrumSpeed, newMode, newOctave) => {

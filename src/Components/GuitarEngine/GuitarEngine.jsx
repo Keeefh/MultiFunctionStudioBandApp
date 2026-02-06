@@ -5,10 +5,11 @@ import './GuitarEngine.css';
 function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurrentPlaybackTime, currentVisualizedAudioRef, socket, roomId, username, userVolumes = {}, isVisible = true }) {
 
   // Refs to track values for keyboard handler (avoids stale closure)
+  // Initialize with null - will be synced by useEffect hooks
   const isVisibleRef = useRef(isVisible);
-  const chordBoardsRef = useRef(chordBoards);
-  const strumDownKeyRef = useRef(strumDownKey);
-  const strumUpKeyRef = useRef(strumUpKey);
+  const chordBoardsRef = useRef(null);
+  const strumDownKeyRef = useRef(null);
+  const strumUpKeyRef = useRef(null);
   const strumActiveChordRef = useRef(null);
   const playNoteRef = useRef(null);
 
@@ -479,6 +480,9 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
 
       const key = (e.key || '').toLowerCase();
       const boards = chordBoardsRef.current;
+
+      // Skip if refs not yet initialized
+      if (!boards) return;
 
       // Left-hand chord/note selection
       const idx = boards.findIndex(b => b.key === key);

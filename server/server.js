@@ -25,10 +25,16 @@ const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}
 //makes the upload directories
 const UPLOADS_DIR = path.join(__dirname, '..', 'uploads')
 const ORIGINAL_DIR = path.join(UPLOADS_DIR, 'original')
-const COMPRESSED_DIR = path.join(UPLOADS_DIR, 'compressed') 
+const COMPRESSED_DIR = path.join(UPLOADS_DIR, 'compressed')
 
-fs.mkdirSync(ORIGINAL_DIR, { recursive: true }) //makes the directories if they do not exist
-fs.mkdirSync(COMPRESSED_DIR, { recursive: true })
+// Create upload directories (with error handling for cloud environments)
+try {
+  fs.mkdirSync(ORIGINAL_DIR, { recursive: true })
+  fs.mkdirSync(COMPRESSED_DIR, { recursive: true })
+  console.log('Upload directories ready')
+} catch (err) {
+  console.warn('Could not create upload directories:', err.message)
+}
 
 app.use(cors())
 app.use(express.json())
@@ -312,8 +318,18 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(PORT, () => {
-  console.log(`\n✅ Server listening on http://localhost:${PORT}`)
+// Bind to 0.0.0.0 for Railway/cloud hosting
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n✅ Server listening on port ${PORT}`)
   console.log(`   - HTTP for file uploads`)
   console.log(`   - WebSocket for Socket.IO real-time sync\n`)
+})
+
+// Handle uncaught errors
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err)
+})
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err)
 })

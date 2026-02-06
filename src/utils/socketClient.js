@@ -26,20 +26,27 @@ export function initSocket(backendUrl = DEFAULT_BACKEND_URL) {
     return socket
   }
 
+  console.log(`🔄 Connecting to backend: ${backendUrl}`)
+
   // LEARN: io() connects to backend via WebSocket
   socket = io(backendUrl, {
     reconnection: true,
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
-    reconnectionAttempts: 5,
+    reconnectionAttempts: 10,
+    transports: ['websocket', 'polling'],
   })
 
   socket.on('connect', () => {
     console.log(`\n🔗 Connected to server: ${socket.id}`)
   })
 
-  socket.on('disconnect', () => {
-    console.log(`\n🔌 Disconnected from server`)
+  socket.on('connect_error', (error) => {
+    console.error(`\n❌ Connection error:`, error.message)
+  })
+
+  socket.on('disconnect', (reason) => {
+    console.log(`\n🔌 Disconnected from server: ${reason}`)
   })
 
   return socket

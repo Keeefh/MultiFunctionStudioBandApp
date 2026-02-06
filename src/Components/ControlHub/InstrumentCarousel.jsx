@@ -136,8 +136,10 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
               ease: 'easeInOut',
             }}
             style={{
-              width: '340px',
-              height: '340px',
+              maxWidth: '340px',
+              maxHeight: '300px',
+              width: 'auto',
+              height: 'auto',
               objectFit: 'contain',
               filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4))',
             }}
@@ -150,7 +152,7 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
             style={{
               position: 'absolute',
               bottom: '-40px',
-              width: '340px',
+              width: '280px',
               height: '40px',
               borderRadius: '50%',
               background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%)',

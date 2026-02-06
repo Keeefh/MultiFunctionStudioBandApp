@@ -11,7 +11,14 @@ const socketIo = require('socket.io')
 
 const app = express()
 const server = http.createServer(app)
-const io = socketIo(server, { cors: { origin: '*' } }) // insert front end backend
+const io = socketIo(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true
+  },
+  transports: ['websocket', 'polling']
+})
 
 const PORT = process.env.PORT || 5000  // Server port or defaut 
 const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`

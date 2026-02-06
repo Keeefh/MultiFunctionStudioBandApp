@@ -3,7 +3,10 @@ import ChordBoard from './ChordBoard';
 import './GuitarEngine.css';
 
 function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurrentPlaybackTime, currentVisualizedAudioRef, socket, roomId, username, userVolumes = {}, isVisible = true }) {
-  
+
+  // Ref to track visibility for keyboard handler (avoids stale closure)
+  const isVisibleRef = useRef(isVisible);
+
   // WebAudioFont player refs
   const playerRef = useRef(null);
   const instrRef = useRef(null);
@@ -431,12 +434,17 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
     setPendingRemoteCount(0);
   }, [guitarReady, performStrum]);
 
+  // Keep ref in sync with isVisible prop
+  useEffect(() => {
+    isVisibleRef.current = isVisible;
+  }, [isVisible]);
+
   // Keyboard handler: left-hand chord selection, right-hand strumming
   useEffect(() => {
-    // Only listen for guitar keys when guitar is visible
-    if (!isVisible) return;
-
     const onKeyDown = (e) => {
+      // Check ref for current visibility (avoids stale closure)
+      if (!isVisibleRef.current) return;
+
       // Ignore if user is typing in an input field
       const activeEl = document.activeElement;
       if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) {
@@ -471,7 +479,7 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [chordBoards, activeChordIndex, strumDownKey, strumUpKey, audioCtx, isVisible]);
+  }, [chordBoards, activeChordIndex, strumDownKey, strumUpKey, audioCtx]);
 
   // Update chord for a specific board
   const updateChordBoard = (index, newKey, newChord, newStrumSpeed, newMode, newOctave) => {

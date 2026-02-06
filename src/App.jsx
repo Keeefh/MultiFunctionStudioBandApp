@@ -27,6 +27,7 @@ function App() {
   const currentVisualizedAudioRef = useRef(null);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0); 
   const [selectedInstrument, setSelectedInstrument] = useState('PADS');
+  const selectedInstrumentRef = useRef(selectedInstrument); // Ref to track current instrument
   const [activeMode, setActiveMode] = useState('instruments');
 
   // Multiplayer/socket state
@@ -334,38 +335,43 @@ useEffect(() => {
   }, [byKit]);
 
   const buttonKey = ['t','y','u','g','h','j','v','b','n']
-  const buttonKeyIndex = buttonKey.length;  
+  const buttonKeyIndex = buttonKey.length;
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    selectedInstrumentRef.current = selectedInstrument;
+  }, [selectedInstrument]);
 
   useEffect(() => {
-    // Only listen for pad keys when PADS instrument is selected
-    if (selectedInstrument !== 'PADS') return;
-
     const onKeyDown = (e) => {
-      const active= document.activeElement
-      if(active && (active.tagName ==="INPUT" || active.tagName ==="TEXTAREA" || active.isContentEditable)) {
+      // Check ref for current instrument (avoids stale closure)
+      if (selectedInstrumentRef.current !== 'PADS') return;
+
+      const active = document.activeElement;
+      if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable)) {
         return; // Ignore ui interactions
-    }
-  const key = (e.key || '').toLowerCase();
-    const idx = buttonKey.indexOf(key);
-    if (idx !== -1) {
-      // Trigger visual feedback for keyboard press
-      const padButtons = document.querySelectorAll('.pad-btn');
-      if (padButtons[idx]) {
-        padButtons[idx].classList.add('keyboard-pressed');
-        setTimeout(() => {
-          padButtons[idx].classList.remove('keyboard-pressed');
-        }, 150);
       }
-      void handlePadButtonClick(idx);
-      e.preventDefault
-    }
-   }
+      const key = (e.key || '').toLowerCase();
+      const idx = buttonKey.indexOf(key);
+      if (idx !== -1) {
+        // Trigger visual feedback for keyboard press
+        const padButtons = document.querySelectorAll('.pad-btn');
+        if (padButtons[idx]) {
+          padButtons[idx].classList.add('keyboard-pressed');
+          setTimeout(() => {
+            padButtons[idx].classList.remove('keyboard-pressed');
+          }, 150);
+        }
+        void handlePadButtonClick(idx);
+        e.preventDefault();
+      }
+    };
 
     window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [buttonKey, handlePadButtonClick, selectedInstrument]);
+  }, [buttonKey, handlePadButtonClick]);
 
   if (!byKit || Object.keys(byKit).length === 0) {
     return <div>Loading...</div>;

@@ -1,6 +1,7 @@
-import { useMemo, useState, useEffect } from 'react';  
+import { useMemo, useState, useEffect } from 'react';
 import './App.css'
 import './Index.css'
+import './Components/PadsSection/PadsSection.css'
 import PadButton from "./Components/PadButton Component/PadButton.jsx";
 import { getAudio } from './Components/Audioloader_Component/Getaudio.jsx'
 import LibraryBrowser from './Components/libraryBrowser/libraryBrowser.jsx';
@@ -52,14 +53,71 @@ function App() {
     const s = initSocket();
     setSocket(s);
 
+    // Normalize users array - convert strings to objects if needed
+    const normalizeUsers = (arr) => {
+      if (!Array.isArray(arr)) return [];
+      return arr.map(u => typeof u === 'string' ? { username: u } : u);
+    };
+
+    // Handle room-users event (user list updates)
     const handleRoomUsers = (payload) => {
-      if (payload && Array.isArray(payload.users)) setUsers(payload.users);
+      console.log('📋 room-users event received:', payload);
+      // Handle different payload formats from server
+      if (Array.isArray(payload)) {
+        // Server sends array directly
+        setUsers(normalizeUsers(payload));
+      } else if (payload && Array.isArray(payload.users)) {
+        // Server sends { users: [...] }
+        setUsers(normalizeUsers(payload.users));
+      }
+    };
+
+    // Handle room-joined event (when joining a room)
+    const handleRoomJoined = (payload) => {
+      console.log('🚪 room-joined event received:', payload);
+      // Update users if the payload includes a users array
+      if (payload && Array.isArray(payload.users)) {
+        setUsers(payload.users);
+      }
+    };
+
+    // Handle user-joined event (when another user joins)
+    const handleUserJoined = (payload) => {
+      console.log('👋 user-joined event received:', payload);
+      if (payload && payload.user) {
+        setUsers(prev => {
+          // Avoid duplicates
+          const exists = prev.some(u => u.username === payload.user.username);
+          if (exists) return prev;
+          return [...prev, payload.user];
+        });
+      } else if (payload && payload.users) {
+        setUsers(payload.users);
+      }
+    };
+
+    // Handle user-left event (when a user leaves)
+    const handleUserLeft = (payload) => {
+      console.log('👋 user-left event received:', payload);
+      if (payload && payload.username) {
+        setUsers(prev => prev.filter(u => u.username !== payload.username));
+      } else if (payload && payload.userId) {
+        setUsers(prev => prev.filter(u => u.username !== payload.userId));
+      } else if (payload && Array.isArray(payload.users)) {
+        setUsers(payload.users);
+      }
     };
 
     s.on && s.on('room-users', handleRoomUsers);
+    s.on && s.on('room-joined', handleRoomJoined);
+    s.on && s.on('user-joined', handleUserJoined);
+    s.on && s.on('user-left', handleUserLeft);
 
     return () => {
       s.off && s.off('room-users', handleRoomUsers);
+      s.off && s.off('room-joined', handleRoomJoined);
+      s.off && s.off('user-joined', handleUserJoined);
+      s.off && s.off('user-left', handleUserLeft);
       try { s.disconnect(); } catch (e) { /* ignore */ }
     };
   }, []);
@@ -73,6 +131,43 @@ function App() {
   analyserNode.smoothingTimeConstant = 0.4;
   return analyserNode;
   })
+
+  // Listen for pad-pressed events from other users in the room
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleRemotePadPress = async (data) => {
+      const { sampleName, userId } = data;
+
+      // Don't play if it's from ourselves
+      if (userId === username) return;
+
+      console.log(`🎵 ${userId} played: ${sampleName}`);
+
+      // Find the sample in picked array by name
+      const sample = picked.find(p => p && p.name === sampleName);
+      if (sample && sample.src) {
+        // Apply user volume if set
+        const volume = userVolumes[userId] ?? 1;
+
+        // Resume audio context if suspended
+        if (audioCtx.state === 'suspended') {
+          try { await audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
+
+        const audio = new Audio(sample.src);
+        audio.volume = volume;
+        audio.play().catch(err => console.warn('Failed to play remote sample:', err));
+      }
+    };
+
+    socket.on('pad-pressed', handleRemotePadPress);
+
+    return () => {
+      socket.off('pad-pressed', handleRemotePadPress);
+    };
+  }, [socket, username, picked, userVolumes, audioCtx]);
+
   useEffect(() => {
   console.log("Picked array has been updated:", picked);
 }, [picked]);  // Log when picked state changes
@@ -181,10 +276,19 @@ const handlePadButtonClick = async (index) => {
       audio.handleAudioEnded=handleAudioEnded;
       
 
-      //this stars the audio and for the function to wrok 
+      //this stars the audio and for the function to wrok
       audio.addEventListener("timeupdate",handleTimeUpdate)
       audio.addEventListener("ended",handleAudioEnded)
       audio.play();
+
+      // Broadcast pad press to other users in the room
+      if (socket && roomId && username) {
+        socket.emit('pad-pressed', {
+          roomId,
+          sampleName: sampleToPlay.name,
+          userId: username,
+        });
+      }
 
     }
 
@@ -195,7 +299,16 @@ const handlePadButtonClick = async (index) => {
                     }
              const audio = new Audio(sampleToPlay.src);
              audio.crossOrigin = 'anonymous';
-             audio.play(); // Still play, but warn about visualization      
+             audio.play(); // Still play, but warn about visualization
+
+             // Broadcast pad press to other users in the room
+             if (socket && roomId && username) {
+               socket.emit('pad-pressed', {
+                 roomId,
+                 sampleName: sampleToPlay.name,
+                 userId: username,
+               });
+             }
     }
             else{            console.warn(`No sample assigned to pad ${index}.`);
 }
@@ -262,6 +375,15 @@ useEffect(() => {
         onInstrumentChange={setSelectedInstrument}
         activeMode={activeMode}
         onModeChange={setActiveMode}
+        socket={socket}
+        isConnected={socket ? socket.connected : false}
+        roomId={roomId}
+        setRoomId={setRoomId}
+        username={username}
+        setUsername={setUsername}
+        users={users}
+        userVolumes={userVolumes}
+        onUserVolumeChange={(id, val) => setUserVolumes(prev => ({ ...prev, [id]: val }))}
       />
       <div id="main" className="w-100 vh-100 m-0">
 
@@ -280,7 +402,7 @@ useEffect(() => {
           />
         </div>
       ) : selectedInstrument === 'GUITAR' ? (
-        <div className="d-flex align-items-center justify-content-center w-100 h-100" style={{ padding: '24px' }}>
+        <div className="d-flex align-items-center justify-content-center w-100 h-100">
           <GuitarEngine
             audioCtx={audioCtx}
             analyser={analyser}
@@ -295,55 +417,12 @@ useEffect(() => {
           />
         </div>
       ) : selectedInstrument === 'PADS' ? (
-        <div style={{
-          width: '100%',
-          height: '100vh',
-          background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)',
-          padding: '0',
-          boxSizing: 'border-box',
-          overflow: 'hidden',
-          display: 'grid',
-          gridTemplateColumns: '1.8fr 0.6fr 0.6fr',
-          gridTemplateRows: '1fr 1fr',
-          gap: '12px',
-        }}>
+        <div className="pads-section">
           {/* LEFT: Pad Grid Device */}
-          <div id="keyboard-section" style={{
-            gridColumn: '1',
-            gridRow: '1 / 3',
-            background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-            border: '6px outset #555',
-            borderTopColor: '#999',
-            borderLeftColor: '#999',
-            borderBottomColor: '#111',
-            borderRightColor: '#111',
-            borderRadius: '4px',
-            padding: '12px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-            overflow: 'hidden',
-          }}>
-            <h3 style={{
-              color: '#ffaa00',
-              fontFamily: 'Courier New, monospace',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              textShadow: '0 0 8px rgba(255, 170, 0, 0.6)',
-              margin: '0 0 4px 0',
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-            }}>DRUM PADS</h3>
-            
-            <div ref={padButtonRef} style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '8px',
-              aspectRatio: '1 / 1',
-              width: '100%',
-              maxWidth: '100%',
-              overflow: 'hidden',
-            }} id="pad-page">
+          <div id="keyboard-section" className="pads-keyboard-section">
+            <h3 className="pads-section-title">DRUM PADS</h3>
+
+            <div ref={padButtonRef} className="pads-grid" id="pad-page">
               {Array.from({ length: buttonKeyIndex }).map((_, index) => (
                 <PadButton
                   padButtonRef={padButtonRef}
@@ -354,66 +433,20 @@ useEffect(() => {
                 />
               ))}
             </div>
-            
+
             {isAssigningSample && selectedSample && (
-              <div style={{
-                color: '#ff5555',
-                fontFamily: 'Courier New, monospace',
-                fontSize: '11px',
-                fontWeight: 'bold',
-                textShadow: '0 0 8px rgba(255, 85, 85, 0.6)',
-                marginTop: '8px',
-                textAlign: 'center',
-              }}>
+              <div className="pads-assign-indicator">
                 ▸ ASSIGN: {selectedSample.name}
               </div>
             )}
           </div>
 
           {/* TOP-RIGHT: Library Browser Device */}
-          <div id="instrument-section" style={{
-            gridColumn: '2 / 4',
-            gridRow: '1',
-            background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-            border: '4px outset #555',
-            borderTopColor: '#999',
-            borderLeftColor: '#999',
-            borderBottomColor: '#111',
-            borderRightColor: '#111',
-            borderRadius: '8px',
-            padding: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-            overflow: 'auto',
-          }}>
-            <h3 style={{
-              color: '#00ffff',
-              fontFamily: 'Courier New, monospace',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              textShadow: '0 0 8px rgba(0, 255, 255, 0.6)',
-              margin: '0 0 8px 0',
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-            }}>SAMPLE LIBRARY</h3>
-            
-            <div style={{
-              flex: 1,
-              overflow: 'auto',
-              background: 'rgba(0, 0, 0, 0.4)',
-              border: '2px inset #222',
-              padding: '0',
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div style={{
-                width: '100%',
-                height: '100%',
-                overflow: 'auto',
-              }}>
+          <div id="instrument-section" className="pads-library-section">
+            <h3 className="pads-section-title">SAMPLE LIBRARY</h3>
+
+            <div className="pads-library-content">
+              <div className="pads-library-inner">
                 <LibraryBrowser
                   libraryRef={noteBook}
                   byKit={byKit}
@@ -437,47 +470,18 @@ useEffect(() => {
           </div>
 
           {/* BOTTOM-RIGHT: Audio Visualizer Device */}
-          <div id="wave-page" style={{
-            gridColumn: '2 / 4',
-            gridRow: '2',
-            background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-            border: '4px outset #555',
-            borderTopColor: '#999',
-            borderLeftColor: '#999',
-            borderBottomColor: '#111',
-            borderRightColor: '#111',
-            borderRadius: '8px',
-            padding: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-          }}>
-            <h3 style={{
-              color: '#00ff99',
-              fontFamily: 'Courier New, monospace',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              textShadow: '0 0 8px rgba(0, 255, 153, 0.6)',
-              margin: '0',
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-            }}>SPECTRUM ANALYZER</h3>
-            
-            <div style={{
-              flex: 1,
-              background: 'rgba(0, 30, 20, 0.6)',
-              border: '2px inset #001a0f',
-              borderRadius: '4px',
-              overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div style={{
-                width: '100%',
-                height: '100%',
-              }}>
-                <LiveAudioVisualizer analyser={analyser} width="100%" height="100%" />
+          <div id="wave-page" className="pads-visualizer-section">
+            <h3 className="pads-section-title">SPECTRUM ANALYZER</h3>
+
+            <div className="pads-visualizer-content">
+              <div className="pads-visualizer-inner">
+                <LiveAudioVisualizer
+                  analyser={analyser}
+                  width="100%"
+                  height="100%"
+                  barColor="rgba(0, 217, 163, 0.8)"
+                  backgroundColor="transparent"
+                />
               </div>
             </div>
           </div>

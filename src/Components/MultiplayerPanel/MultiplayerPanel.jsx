@@ -263,6 +263,11 @@ function MultiplayerPanel({ socket, isConnected, roomId, setRoomId, username, se
             cleanupVoiceChat();
         };
 
+        // Guard against socket being null/undefined
+        if (!socket) {
+            return;
+        }
+
         socket.on('voice-offer', handleOffer);
         socket.on('voice-answer', handleAnswer);
         socket.on('voice-ice-candidate', handleIceCandidate);
@@ -280,7 +285,7 @@ function MultiplayerPanel({ socket, isConnected, roomId, setRoomId, username, se
 
     return (
         <div className="multiplayer-panel">
-            <h2>🎵 Multiplayer Room</h2>
+            <h2>Multiplayer Room</h2>
             
             <div className="connection-status">
                 <span className={`status-dot ${isConnected ? 'connected' : 'disconnected'}`}></span>

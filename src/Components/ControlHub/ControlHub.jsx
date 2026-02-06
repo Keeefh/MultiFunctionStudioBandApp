@@ -1,9 +1,25 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import InstrumentCarousel from './InstrumentCarousel';
+import MultiplayerPanel from '../MultiplayerPanel/MultiplayerPanel';
 
 // Suspended Pouch Navbar with 70-80% expanded panel
-export default function ControlHub({ onModeChange, selectedInstrument, onInstrumentChange, activeMode = 'instruments' }) {
+export default function ControlHub({
+  onModeChange,
+  selectedInstrument,
+  onInstrumentChange,
+  activeMode = 'instruments',
+  // Multiplayer props
+  socket,
+  isConnected,
+  roomId,
+  setRoomId,
+  username,
+  setUsername,
+  users,
+  userVolumes,
+  onUserVolumeChange
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState('instruments');
 
@@ -132,27 +148,37 @@ export default function ControlHub({ onModeChange, selectedInstrument, onInstrum
           )}
         </div>
 
-        {/* Multiplayer Content (placeholder) */}
+        {/* Multiplayer Content */}
         {mode === 'multiplayer' && (
           <div
             style={{
               flex: 1,
               display: 'flex',
-              alignItems: 'center',
+              alignItems: 'flex-start',
               justifyContent: 'center',
-              color: '#a1a1aa',
-              fontSize: '18px',
+              overflow: 'auto',
+              padding: '20px',
             }}
           >
-            Multiplayer Panel Coming Soon
+            <MultiplayerPanel
+              socket={socket}
+              isConnected={isConnected}
+              roomId={roomId}
+              setRoomId={setRoomId}
+              username={username}
+              setUsername={setUsername}
+              users={users}
+              userVolumes={userVolumes}
+              onUserVolumeChange={onUserVolumeChange}
+            />
           </div>
         )}
       </motion.div>
 
-      {/* Pouch Handle - Always visible, clickable */}
+      {/* Pouch Handle - Always visible, clickable, moves with panel */}
       <motion.button
         onClick={handleToggle}
-        animate={{ rotate: isOpen ? 180 : 0 }}
+        animate={{ top: isOpen ? '75vh' : '0' }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         style={{
           position: 'fixed',
@@ -179,7 +205,25 @@ export default function ControlHub({ onModeChange, selectedInstrument, onInstrum
           pointerEvents: 'auto',
         }}
       >
-        ▼
+        {/* Discord-style chevron arrow */}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          style={{
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s ease',
+          }}
+        >
+          <path
+            d="M6 9L12 15L18 9"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </motion.button>
     </>
   );

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ChordBoard from './ChordBoard';
-import StrumBoard from './StrumBoard';
 import './GuitarEngine.css';
 
 function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurrentPlaybackTime, currentVisualizedAudioRef, socket, roomId, username, userVolumes = {}, isVisible = true }) {
@@ -32,9 +31,11 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
   const [vibratingStrings, setVibratingStrings] = useState([]);
   const guitarSvgRef = useRef(null);
 
-  // Strum keybinds (2 boards)
+  // Strum keybinds
   const [strumDownKey, setStrumDownKey] = useState('arrowdown');
   const [strumUpKey, setStrumUpKey] = useState('arrowup');
+  const [strumDirection, setStrumDirection] = useState(null); // 'down' | 'up' | null for visual feedback
+  const [isEditingStrumKey, setIsEditingStrumKey] = useState(null); // 'down' | 'up' | null
 
   // Initialize WebAudioFont player
   useEffect(() => {
@@ -130,20 +131,75 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
     })
   }, [vibratingStrings, svgHasInternalStrings])
 
+  // Realistic chord-to-string mapping (standard tuning: E-A-D-G-B-E)
+  const getStringsForChord = (chordName) => {
+    const chordMap = {
+      // Major chords
+      'C': [2, 3, 4, 5],      // x32010
+      'D': [1, 2, 3, 4],      // xx0232
+      'E': [1, 2, 3, 4, 5, 6], // 022100
+      'F': [1, 2, 3, 4, 5, 6], // 133211 (barre)
+      'G': [1, 2, 3, 4, 5, 6], // 320003
+      'A': [1, 2, 3, 4, 5],   // x02220
+      'B': [1, 2, 3, 4, 5],   // x24442 (barre)
+      // Minor chords
+      'Am': [1, 2, 3, 4, 5],  // x02210
+      'Bm': [1, 2, 3, 4, 5],  // x24432 (barre)
+      'Cm': [1, 2, 3, 4, 5],  // x35543 (barre)
+      'Dm': [1, 2, 3, 4],     // xx0231
+      'Em': [1, 2, 3, 4, 5, 6], // 022000
+      'Fm': [1, 2, 3, 4, 5, 6], // 133111 (barre)
+      'Gm': [1, 2, 3, 4, 5, 6], // 355333 (barre)
+      // 7th chords
+      'C7': [2, 3, 4, 5],
+      'D7': [1, 2, 3, 4],
+      'E7': [1, 2, 3, 4, 5, 6],
+      'F7': [1, 2, 3, 4, 5, 6],
+      'G7': [1, 2, 3, 4, 5, 6],
+      'A7': [1, 2, 3, 4, 5],
+      'B7': [1, 2, 3, 4, 5],
+      // Power chords
+      'C5': [5, 6],
+      'D5': [4, 5],
+      'E5': [5, 6],
+      'F5': [5, 6],
+      'G5': [5, 6],
+      'A5': [5, 6],
+      'B5': [5, 6]
+    };
+
+    // Check for direct match first
+    if (chordMap[chordName]) {
+      return chordMap[chordName];
+    }
+
+    // Try to match base chord without modifiers
+    const m = chordName.match(/^([A-G]#?)/i);
+    if (m) {
+      const base = m[1];
+      if (chordMap[base]) {
+        return chordMap[base];
+      }
+    }
+
+    // Default fallback - all strings
+    return [1, 2, 3, 4, 5, 6];
+  };
+
   // Helper: map chord name to MIDI notes
   const getMidiNotesForChord = (chordName, rootOctave = 3) => {
-    const rootNoteToMidi = { 
-      C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 
-      'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 
+    const rootNoteToMidi = {
+      C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5,
+      'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11
     };
-    
+
     const m = chordName.match(/^([A-G]#?)(.*)/i);
     if (!m) return [48, 52, 55];
-    
+
     const root = m[1].toUpperCase();
     const type = (m[2] || '').toLowerCase();
     const base = 12 * rootOctave + (rootNoteToMidi[root] ?? 0);
-    
+
     // Comprehensive chord formulas
     if (type === 'm') return [base, base + 3, base + 7];
     if (type === '7') return [base, base + 4, base + 7, base + 10];
@@ -214,7 +270,8 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
       }
     });
 
-    const stringIndices = midiNotes.map((_, i) => (i % 6) + 1);
+    // Use realistic string mapping based on chord
+    const stringIndices = getStringsForChord(chord);
     setVibratingStrings(stringIndices);
     setTimeout(() => setVibratingStrings([]), 600);
 
@@ -245,6 +302,10 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
       return;
     }
 
+    // Visual feedback for strum direction
+    setStrumDirection(direction);
+    setTimeout(() => setStrumDirection(null), 300);
+
     const chordPayload = {
       chord: board.chord,
       octave: board.octave,
@@ -254,6 +315,47 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
 
     performStrum(chordPayload, direction, { isRemote });
   };
+
+  // Format key display (make arrow keys readable)
+  const formatKeyDisplay = (key) => {
+    const keyMap = {
+      'arrowdown': '↓',
+      'arrowup': '↑',
+      'arrowleft': '←',
+      'arrowright': '→',
+      ' ': 'Space',
+      'enter': '↵',
+      'tab': 'Tab',
+      'shift': 'Shift',
+      'control': 'Ctrl',
+      'alt': 'Alt',
+    };
+    return keyMap[key.toLowerCase()] || key.toUpperCase();
+  };
+
+  // Handle strum key rebinding
+  const handleStrumKeyChange = (direction) => {
+    setIsEditingStrumKey(direction);
+  };
+
+  // Listen for key press when editing strum keys
+  useEffect(() => {
+    if (!isEditingStrumKey) return;
+
+    const handleKeyCapture = (e) => {
+      e.preventDefault();
+      const newKey = e.key.toLowerCase();
+      if (isEditingStrumKey === 'down') {
+        setStrumDownKey(newKey);
+      } else if (isEditingStrumKey === 'up') {
+        setStrumUpKey(newKey);
+      }
+      setIsEditingStrumKey(null);
+    };
+
+    window.addEventListener('keydown', handleKeyCapture);
+    return () => window.removeEventListener('keydown', handleKeyCapture);
+  }, [isEditingStrumKey]);
 
   // Play single note (for note mode)
   const playNote = (chordName, octave) => {
@@ -383,74 +485,118 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
   };
 
   return (
-    <div className="guitar-engine" style={{ display: isVisible ? 'block' : 'none' }}>
-      <h2>Virtual Guitar</h2>
-      
-      {/* Guitar Visual */}
-      <div className="guitar-visual-container" style={{ position: 'relative' }}>
-        <object 
-          ref={guitarSvgRef}
-          data="/Frame 1.svg" 
-          type="image/svg+xml"
-          className="guitar-svg"
-          style={{
-            maxWidth: '100%',
-            height: 'auto',
-            filter: vibratingStrings.length > 0 ? 'drop-shadow(0 0 10px rgba(218, 150, 65, 0.5))' : 'none',
-            transition: 'filter 0.1s ease',
-            pointerEvents: 'none'
-          }}
-          aria-label="Interactive Guitar Visualization"
-        />
-
-        {/* Overlay fallback visible when the imported SVG lacks internal string elements */}
-        <div ref={overlayRef} className="guitar-overlay" aria-hidden style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: svgHasInternalStrings ? 'none' : 'block' }}>
-          {[1,2,3,4,5,6].map((i) => (
-            <div key={i} className={`fake-string string-${i}`} style={{ position: 'absolute', left: `${10 + (i-1) * 13}%`, top: '10%', bottom: '10%', width: '2px', background: 'rgba(255, 255, 255, 0.6)', transformOrigin: 'center', transition: 'transform 0.12s ease' }} />
-          ))}
-        </div>
-      </div>
-      
-      {/* Chord Boards (10) */}
-      <div className="chord-boards-container">
-        <h3>Chord Boards (Left Hand)</h3>
-        <div className="queued-remote-controls" style={{ marginBottom: '8px' }}>
-          <button type="button" onClick={replayQueuedRemoteStrums} disabled={pendingRemoteCount === 0}>
-            Replay queued remote strums ({pendingRemoteCount})
-          </button>
-        </div>
-
-        
-        {chordBoards.map((board, i) => (
-          <ChordBoard
-            key={i}
-            index={i}
-            keyBind={board.key}
-            chord={board.chord}
-            strumSpeed={board.strumSpeed}
-            mode={board.mode}
-            octave={board.octave}
-            isActive={activeChordIndex === i}
-            onUpdate={(newKey, newChord, newStrumSpeed, newMode, newOctave) => 
-              updateChordBoard(i, newKey, newChord, newStrumSpeed, newMode, newOctave)
-            }
-          />
-        ))}
+    <div className="guitar-engine" style={{ display: isVisible ? 'flex' : 'none' }}>
+      {/* Decorative background elements */}
+      <div className="guitar-bg-decoration">
+        <div className="decoration-orb orb-1"></div>
+        <div className="decoration-orb orb-2"></div>
+        <div className="decoration-orb orb-3"></div>
       </div>
 
-      {/* Strum Boards (2) */}
-      <div className="strum-boards-container">
-        <h3>Strum Keys (Right Hand)</h3>
-        <StrumBoard
-          label="Strum Down"
-          keyBind={strumDownKey}
-          onUpdate={setStrumDownKey}
-        />
-        <StrumBoard
-          label="Strum Up"
-          keyBind={strumUpKey}
-          onUpdate={setStrumUpKey}
-        />
+      {/* Header */}
+      <div className="guitar-header">
+        <h2>VIRTUAL GUITAR</h2>
+        <div className="header-subtitle">WebAudioFont Synthesis Engine</div>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="guitar-main-content">
+        {/* Guitar Visual (Left Side) */}
+        <div className="guitar-visual-container">
+          <div className="guitar-visual-frame">
+            <object
+              ref={guitarSvgRef}
+              data="/Frame 1.svg"
+              type="image/svg+xml"
+              className="guitar-svg"
+              style={{
+                filter: vibratingStrings.length > 0
+                  ? 'brightness(1.08) saturate(1.1)'
+                  : 'brightness(1.02) saturate(1.05)',
+                pointerEvents: 'none'
+              }}
+              aria-label="Interactive Guitar Visualization"
+            />
+
+            {/* Overlay fallback */}
+            <div ref={overlayRef} className="guitar-overlay" aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: svgHasInternalStrings ? 'none' : 'block' }}>
+              {[1,2,3,4,5,6].map((i) => (
+                <div key={i} className={`fake-string string-${i}`} style={{ position: 'absolute', left: `${10 + (i-1) * 13}%`, top: '10%', bottom: '10%', width: '2px', background: 'rgba(192, 132, 252, 0.7)', transformOrigin: 'center', transition: 'transform 0.12s ease' }} />
+              ))}
+            </div>
+
+            {/* Active Chord Display Overlay */}
+            {activeChordIndex !== null && (
+              <div className="active-chord-overlay">
+                <span className="chord-name">{chordBoards[activeChordIndex].chord}</span>
+                <span className="chord-octave">Oct {chordBoards[activeChordIndex].octave}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Floating Strum Indicator */}
+          <div className="strum-indicator-panel">
+            <div className="strum-indicator-title">STRUM</div>
+            <div className="strum-controls">
+              <button
+                className={`strum-key-btn strum-up ${strumDirection === 'up' ? 'active' : ''} ${isEditingStrumKey === 'up' ? 'editing' : ''}`}
+                onClick={() => handleStrumKeyChange('up')}
+                title="Click to change key"
+              >
+                <span className="strum-arrow">▲</span>
+                <span className="strum-key-label">{formatKeyDisplay(strumUpKey)}</span>
+              </button>
+              <button
+                className={`strum-key-btn strum-down ${strumDirection === 'down' ? 'active' : ''} ${isEditingStrumKey === 'down' ? 'editing' : ''}`}
+                onClick={() => handleStrumKeyChange('down')}
+                title="Click to change key"
+              >
+                <span className="strum-arrow">▼</span>
+                <span className="strum-key-label">{formatKeyDisplay(strumDownKey)}</span>
+              </button>
+            </div>
+            {isEditingStrumKey && (
+              <div className="strum-edit-hint">Press any key...</div>
+            )}
+          </div>
+        </div>
+
+        {/* Controls (Right Side) */}
+        <div className="guitar-controls-container">
+          {/* Chord Boards */}
+          <div className="chord-boards-container">
+            <div className="chord-boards-header">
+              <h3>CHORD BOARDS</h3>
+              <span className="chord-boards-hint">Press key to select chord</span>
+            </div>
+
+            {pendingRemoteCount > 0 && (
+              <div className="queued-remote-controls">
+                <button type="button" onClick={replayQueuedRemoteStrums}>
+                  Replay queued ({pendingRemoteCount})
+                </button>
+              </div>
+            )}
+
+            <div className="chord-boards-grid">
+              {chordBoards.map((board, i) => (
+                <ChordBoard
+                  key={i}
+                  index={i}
+                  keyBind={board.key}
+                  chord={board.chord}
+                  strumSpeed={board.strumSpeed}
+                  mode={board.mode}
+                  octave={board.octave}
+                  isActive={activeChordIndex === i}
+                  onUpdate={(newKey, newChord, newStrumSpeed, newMode, newOctave) =>
+                    updateChordBoard(i, newKey, newChord, newStrumSpeed, newMode, newOctave)
+                  }
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,25 +1,131 @@
 <svg width="3659" height="1935" viewBox="0 0 3659 1935" fill="none" xmlns="http://www.w3.org/2000/svg">
 <style>
-@keyframes string-vibrate {
-  0% { transform: translateY(0); }
-  10% { transform: translateY(-4px); }
-  20% { transform: translateY(3px); }
-  30% { transform: translateY(-3px); }
-  40% { transform: translateY(2px); }
-  50% { transform: translateY(-2px); }
-  60% { transform: translateY(1px); }
-  70% { transform: translateY(-1px); }
-  80% { transform: translateY(0.5px); }
-  90% { transform: translateY(-0.5px); }
-  100% { transform: translateY(0); }
-}
-#string-1.vibrating, #string-2.vibrating, #string-3.vibrating,
-#string-4.vibrating, #string-5.vibrating, #string-6.vibrating {
-  animation: string-vibrate 0.6s ease-out;
-  transform-origin: center;
-  stroke: #FFE066;
+/* Base string styles */
+#string-1, #string-2, #string-3, #string-4, #string-5, #string-6 {
+  stroke: #FFFAEE;
   stroke-width: 2;
-  filter: drop-shadow(0 0 5px rgba(255, 224, 102, 0.9));
+  transition: stroke 0.1s ease, stroke-width 0.1s ease, filter 0.1s ease;
+}
+
+/* String-specific vibration animations - different speeds for realistic feel */
+@keyframes string-vibrate-1 {
+  0%, 100% { transform: translateY(0); }
+  8% { transform: translateY(-6px); }
+  16% { transform: translateY(5px); }
+  24% { transform: translateY(-4px); }
+  32% { transform: translateY(3px); }
+  40% { transform: translateY(-2.5px); }
+  50% { transform: translateY(2px); }
+  60% { transform: translateY(-1.5px); }
+  70% { transform: translateY(1px); }
+  80% { transform: translateY(-0.5px); }
+  90% { transform: translateY(0.3px); }
+}
+
+@keyframes string-vibrate-2 {
+  0%, 100% { transform: translateY(0); }
+  7% { transform: translateY(-5px); }
+  14% { transform: translateY(4.5px); }
+  22% { transform: translateY(-3.5px); }
+  30% { transform: translateY(3px); }
+  40% { transform: translateY(-2px); }
+  52% { transform: translateY(1.5px); }
+  64% { transform: translateY(-1px); }
+  78% { transform: translateY(0.5px); }
+}
+
+@keyframes string-vibrate-3 {
+  0%, 100% { transform: translateY(0); }
+  6% { transform: translateY(-4.5px); }
+  13% { transform: translateY(4px); }
+  20% { transform: translateY(-3px); }
+  28% { transform: translateY(2.5px); }
+  38% { transform: translateY(-1.8px); }
+  50% { transform: translateY(1.2px); }
+  65% { transform: translateY(-0.8px); }
+  82% { transform: translateY(0.4px); }
+}
+
+@keyframes string-vibrate-4 {
+  0%, 100% { transform: translateY(0); }
+  5% { transform: translateY(-4px); }
+  12% { transform: translateY(3.5px); }
+  19% { transform: translateY(-2.8px); }
+  27% { transform: translateY(2.2px); }
+  37% { transform: translateY(-1.6px); }
+  50% { transform: translateY(1px); }
+  68% { transform: translateY(-0.6px); }
+}
+
+@keyframes string-vibrate-5 {
+  0%, 100% { transform: translateY(0); }
+  5% { transform: translateY(-3.5px); }
+  11% { transform: translateY(3px); }
+  18% { transform: translateY(-2.5px); }
+  26% { transform: translateY(2px); }
+  36% { transform: translateY(-1.4px); }
+  50% { transform: translateY(0.9px); }
+  70% { transform: translateY(-0.5px); }
+}
+
+@keyframes string-vibrate-6 {
+  0%, 100% { transform: translateY(0); }
+  4% { transform: translateY(-3px); }
+  10% { transform: translateY(2.5px); }
+  16% { transform: translateY(-2px); }
+  24% { transform: translateY(1.6px); }
+  34% { transform: translateY(-1.2px); }
+  48% { transform: translateY(0.8px); }
+  66% { transform: translateY(-0.4px); }
+}
+
+/* Vibrating string styles - subtle glow, focused on string only */
+#string-1.vibrating {
+  animation: string-vibrate-1 0.7s ease-out;
+  transform-origin: center;
+  stroke: #FF6B9D;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 3px rgba(255, 107, 157, 0.8));
+}
+
+#string-2.vibrating {
+  animation: string-vibrate-2 0.65s ease-out;
+  transform-origin: center;
+  stroke: #FF9F43;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 3px rgba(255, 159, 67, 0.8));
+}
+
+#string-3.vibrating {
+  animation: string-vibrate-3 0.6s ease-out;
+  transform-origin: center;
+  stroke: #FECA57;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 3px rgba(254, 202, 87, 0.8));
+}
+
+#string-4.vibrating {
+  animation: string-vibrate-4 0.55s ease-out;
+  transform-origin: center;
+  stroke: #48DBFB;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 2px rgba(72, 219, 251, 0.8));
+}
+
+#string-5.vibrating {
+  animation: string-vibrate-5 0.5s ease-out;
+  transform-origin: center;
+  stroke: #A55EEA;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 2px rgba(165, 94, 234, 0.8));
+}
+
+#string-6.vibrating {
+  animation: string-vibrate-6 0.45s ease-out;
+  transform-origin: center;
+  stroke: #26DE81;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 2px rgba(38, 222, 129, 0.8));
 }
 </style>
 <path d="M217.48 1178.58C193.395 484.35 470.482 472.581 520.298 443.706C526.317 441.803 532.249 440.013 538.096 438.331C540.801 437.443 542.886 436.805 543.482 436.805C755.563 377.663 853.575 461.558 893.482 479.581C1063.98 556.581 1142.48 621.081 1291.48 601.081C1611.48 525.581 1616.48 661.581 1632.48 681.081C1651.98 712.081 1674.85 809.581 1671.98 973.581C1669.18 1133.58 1678.98 1285.58 1551.48 1338.58C1423.98 1391.58 1220.48 1338.58 1220.48 1338.58C1079.48 1338.58 931.482 1466.58 780.982 1507.08C605.775 1592.76 345.771 1486.6 326.606 1455.81C326.301 1455.51 325.998 1455.21 325.695 1454.91C325.024 1454.46 324.347 1454.22 324.347 1453.58C224.484 1354.24 224.594 1231.35 217.48 1178.58Z" fill="#DA9641"/>
@@ -33,6 +139,7 @@
 <path id="string-5" d="M822.5 936.5L2711 945.51" stroke="#FFFAEE"/>
 <path id="string-4" d="M825 989.499L2708.5 982" stroke="#FFFAEE"/>
 <path id="string-3" d="M823 963.5L2710 963.5" stroke="#FFFAEE"/>
+<line id="string-1" x1="820" y1="878" x2="2711" y2="918" stroke="#FFFAEE"/>
 <line id="string-2" x1="821.007" y1="905.5" x2="2711.01" y2="932.5" stroke="#FFFAEE"/>
 <path d="M821 882.001C821 874 808 874 808 882.001C808 883.455 813.179 906.5 813.179 979.5C814.687 1006.85 816.597 1041.19 819 1084C822.2 1086.8 826.667 1085.17 828.5 1084C828.5 1083 827 1041.2 821 882.001Z" fill="#FEFEF3" stroke="black"/>
 <path d="M2723 923.945H2711V1044H2723V923.945Z" fill="#FCF6ED"/>

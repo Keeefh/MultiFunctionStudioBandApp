@@ -1,124 +1,152 @@
+/* Discord-style Multiplayer Panel */
 .multiplayer-panel {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 15px;
-    margin: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background: #2f3136;
+    color: #dcddde;
+    padding: 0;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow: hidden;
 }
 
 .multiplayer-panel h2 {
-    margin-top: 0;
-    text-align: center;
-    font-size: 24px;
+    margin: 0;
+    padding: 16px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: #202225;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .connection-status {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
+    padding: 12px 16px;
+    font-size: 13px;
     font-weight: 500;
+    color: #b9bbbe;
+    background: #292b2f;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .status-dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    animation: pulse 2s infinite;
 }
 
 .status-dot.connected {
-    background: #4ade80;
-    box-shadow: 0 0 10px #4ade80;
-}
-
-.status-dot.disconnected {
-    background: #ef4444;
-    box-shadow: 0 0 10px #ef4444;
+    background: #3ba55c;
+    box-shadow: 0 0 0 2px rgba(59, 165, 92, 0.2);
     animation: none;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+.status-dot.disconnected {
+    background: #ed4245;
+    box-shadow: 0 0 0 2px rgba(237, 66, 69, 0.2);
+    animation: none;
 }
 
+/* Join Room Section */
 .join-room-section {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding: 16px;
 }
 
 .join-room-section input {
-    padding: 12px;
+    padding: 10px 12px;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #333;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #202225;
+    color: #dcddde;
+    outline: none;
+    transition: background 0.2s ease;
+}
+
+.join-room-section input::placeholder {
+    color: #72767d;
 }
 
 .join-room-section input:focus {
-    outline: 2px solid #4ade80;
-    background: white;
+    background: #18191c;
 }
 
 .join-room-section button {
-    padding: 12px;
+    padding: 12px 16px;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 4px;
+    font-size: 14px;
     font-weight: 600;
-    background: #4ade80;
-    color: white;
+    background: #5865f2;
+    color: #fff;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.2s ease;
 }
 
-.join-room-section button:hover {
-    background: #22c55e;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
+.join-room-section button:hover:not(:disabled) {
+    background: #4752c4;
 }
 
+.join-room-section button:disabled {
+    background: #5865f2;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Room Info Section */
 .room-info-section {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 0;
 }
 
 .room-details {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 8px;
-    backdrop-filter: blur(10px);
+    background: #292b2f;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .room-details p {
-    margin: 8px 0;
-    font-size: 14px;
+    margin: 4px 0;
+    font-size: 13px;
+    color: #b9bbbe;
 }
 
+.room-details p strong {
+    color: #dcddde;
+}
+
+/* Users List */
 .users-list {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 8px;
-    backdrop-filter: blur(10px);
+    background: transparent;
+    padding: 12px 16px;
+    border-radius: 0;
+    backdrop-filter: none;
 }
 
 .users-list h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 16px;
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #8e9297;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .users-list .users-hint {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.8);
+    color: #72767d;
 }
 
 .users-list ul {
@@ -128,22 +156,24 @@
 }
 
 .users-list li {
-    padding: 8px;
-    margin: 5px 0;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    padding: 8px 10px;
+    margin: 2px 0;
+    background: transparent;
+    border-radius: 4px;
     font-size: 14px;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.15s ease;
+    transition: background 0.1s ease;
+    color: #b9bbbe;
 }
 
 .users-list li:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(79, 84, 92, 0.4);
+    color: #dcddde;
 }
 
 .users-list li.editing {
-    transform: scale(1.01);
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(79, 84, 92, 0.6);
+    color: #fff;
 }
 
 .user-row {
@@ -154,18 +184,19 @@
 }
 
 .user-volume-tag {
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.25);
-    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(79, 84, 92, 0.6);
+    font-size: 11px;
     font-weight: 600;
+    color: #8e9297;
 }
 
 .user-volume-editor {
-    margin-top: 8px;
+    margin-top: 10px;
     padding: 10px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    background: #202225;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -173,42 +204,125 @@
 
 .user-volume-editor input[type="range"] {
     flex: 1;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #4f545c;
+    border-radius: 2px;
+    outline: none;
+}
+
+.user-volume-editor input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
 .user-volume-editor button {
-    padding: 6px 10px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 6px;
-    background: #4ade80;
-    color: #0b1120;
+    border-radius: 4px;
+    background: #5865f2;
+    color: #fff;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s ease;
 }
 
 .user-volume-editor button:hover {
-    background: #22c55e;
+    background: #4752c4;
 }
 
 .user-volume-value {
-    width: 48px;
+    width: 40px;
     text-align: right;
+    font-size: 12px;
     font-weight: 600;
+    color: #b9bbbe;
 }
 
-.leave-button {
-    padding: 12px;
+/* Voice Chat Section */
+.voice-chat-section {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.voice-chat-section h3 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #8e9297;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.voice-chat-section .users-hint {
+    margin: 0 0 12px;
+    font-size: 12px;
+    color: #72767d;
+}
+
+.voice-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.voice-controls button {
+    padding: 8px 16px;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 4px;
+    background: #3ba55c;
+    color: #fff;
+    font-size: 13px;
     font-weight: 600;
-    background: #ef4444;
-    color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.2s ease;
+}
+
+.voice-controls button:hover:not(:disabled) {
+    background: #2d8049;
+}
+
+.voice-controls button:disabled {
+    background: #3ba55c;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.voice-status {
+    font-size: 12px;
+    color: #72767d;
+}
+
+.voice-error {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #ed4245;
+}
+
+/* Leave Button */
+.leave-button {
+    width: 100%;
+    padding: 12px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: 600;
+    background: #292b2f;
+    color: #ed4245;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .leave-button:hover {
-    background: #dc2626;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    background: #ed4245;
+    color: #fff;
 }

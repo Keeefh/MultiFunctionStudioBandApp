@@ -70,30 +70,37 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
           overflow: 'hidden',
         }}
       >
-        {/* Left Chevron */}
+        {/* Left Chevron - Discord style */}
         <motion.button
           onClick={handlePrev}
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, background: 'rgba(255, 255, 255, 0.15)' }}
           whileTap={{ scale: 0.95 }}
           style={{
             position: 'absolute',
             left: '20px',
             zIndex: 10,
-            background: 'rgba(255, 255, 255, 0.1)',
+            background: 'rgba(79, 84, 92, 0.6)',
             border: 'none',
-            color: '#fff',
-            fontSize: '32px',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
+            color: '#dcddde',
+            width: '48px',
+            height: '48px',
+            borderRadius: '8px',
             cursor: 'pointer',
-            backdropFilter: 'blur(10px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            transition: 'background 0.15s ease',
           }}
         >
-          ◀
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 18L9 12L15 6"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </motion.button>
 
         {/* Instrument Display with Floating Effect */}
@@ -151,30 +158,37 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
           />
         </motion.div>
 
-        {/* Right Chevron */}
+        {/* Right Chevron - Discord style */}
         <motion.button
           onClick={handleNext}
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, background: 'rgba(255, 255, 255, 0.15)' }}
           whileTap={{ scale: 0.95 }}
           style={{
             position: 'absolute',
             right: '20px',
             zIndex: 10,
-            background: 'rgba(255, 255, 255, 0.1)',
+            background: 'rgba(79, 84, 92, 0.6)',
             border: 'none',
-            color: '#fff',
-            fontSize: '32px',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
+            color: '#dcddde',
+            width: '48px',
+            height: '48px',
+            borderRadius: '8px',
             cursor: 'pointer',
-            backdropFilter: 'blur(10px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            transition: 'background 0.15s ease',
           }}
         >
-          ▶
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9 6L15 12L9 18"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </motion.button>
       </div>
 

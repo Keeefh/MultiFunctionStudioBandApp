@@ -292,7 +292,8 @@ const LibraryBrowser = ({
                                             <span style={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{sample.name.substring(0, 12)}</span>
                                             <button
                                                 onClick={() => playPreview(sample.src)}
-                                                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "7px", padding: "0", color: "#666", minWidth: "14px" }}
+                                                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "10px", padding: "0", color: "#00d9a3", minWidth: "14px" }}
+                                                title="Preview sample"
                                             >
                                                 ▶
                                             </button>
@@ -312,17 +313,17 @@ const LibraryBrowser = ({
                 {/* Assignment Mode Indicator */}
                 {isAssigningSample && selectedSample && (
                     <div style={{
-                        padding: "4px",
-                        backgroundColor: '#e3f2fd',
-                        border: "2px solid #1976d2",
-                        borderRadius: "3px",
+                        padding: "6px",
+                        backgroundColor: 'rgba(0, 184, 217, 0.1)',
+                        border: "1px solid #00b4d8",
+                        borderRadius: "6px",
                         marginBottom: "4px",
-                        fontSize: "8px"
+                        fontSize: "9px"
                     }}>
-                        <p style={{ margin: "0 0 2px 0", fontWeight: "bold", color: "#1976d2" }}>
+                        <p style={{ margin: "0 0 2px 0", fontWeight: "600", color: "#00d9a3" }}>
                             🎯 ASSIGNING: <strong>{selectedSample.name}</strong>
                         </p>
-                        <p style={{ margin: 0, fontSize: "7px", color: "#0d47a1" }}>
+                        <p style={{ margin: 0, fontSize: "8px", color: "#dbdee1" }}>
                             Click any pad button to assign this sample
                         </p>
                     </div>
@@ -347,17 +348,17 @@ const LibraryBrowser = ({
                                                 }}
                                                 style={{
                                                     flex: 1,
-                                                    padding: "2px 3px",
-                                                    backgroundColor: isAssigningSample && selectedSample?.name === sample.name ? '#1976d2' : '#f5f5f5',
-                                                    color: isAssigningSample && selectedSample?.name === sample.name ? 'white' : '#333',
-                                                    border: isAssigningSample && selectedSample?.name === sample.name ? '1px solid #1976d2' : '1px solid #ddd',
-                                                    borderRadius: "2px",
+                                                    padding: "3px 6px",
+                                                    backgroundColor: isAssigningSample && selectedSample?.name === sample.name ? '#00b4d8' : '#2b2d31',
+                                                    color: isAssigningSample && selectedSample?.name === sample.name ? '#1e1f22' : '#dbdee1',
+                                                    border: isAssigningSample && selectedSample?.name === sample.name ? '1px solid #00d9a3' : '1px solid #3d3f45',
+                                                    borderRadius: "4px",
                                                     cursor: "pointer",
-                                                    fontSize: "7px",
+                                                    fontSize: "8px",
                                                     whiteSpace: "nowrap",
                                                     overflow: "hidden",
                                                     textOverflow: "ellipsis",
-                                                    fontWeight: isAssigningSample && selectedSample?.name === sample.name ? "bold" : "normal",
+                                                    fontWeight: isAssigningSample && selectedSample?.name === sample.name ? "700" : "600",
                                                 }}
                                                 title={`Click to assign "${sample.name}" to a pad`}
                                             >
@@ -366,15 +367,17 @@ const LibraryBrowser = ({
                                             <button
                                                 onClick={() => playPreview(sample.src)}
                                                 style={{
-                                                    padding: "2px 3px",
-                                                    background: "#f0f0f0",
-                                                    border: "1px solid #ddd",
-                                                    borderRadius: "2px",
+                                                    padding: "3px 6px",
+                                                    background: "rgba(0, 217, 163, 0.15)",
+                                                    border: "1px solid rgba(0, 217, 163, 0.3)",
+                                                    borderRadius: "4px",
                                                     cursor: "pointer",
-                                                    fontSize: "7px",
-                                                    minWidth: "20px",
+                                                    fontSize: "10px",
+                                                    color: "#00d9a3",
+                                                    minWidth: "22px",
+                                                    transition: "all 0.15s",
                                                 }}
-                                                title="Preview"
+                                                title="Preview sample"
                                             >
                                                 ▶
                                             </button>
@@ -393,16 +396,20 @@ const LibraryBrowser = ({
 
                 {/* Status & Compression */}
                 <div style={{
-                    padding: "4px",
-                    backgroundColor: compressionStatus.includes('✓') ? '#e8f5e9' : '#fff3e0',
-                    border: "1px solid #ddd",
-                    borderRadius: "3px",
-                    marginBottom: "4px",
-                    fontSize: "7px"
+                    padding: "8px",
+                    backgroundColor: compressionStatus.includes('✓') ? 'rgba(0, 217, 163, 0.08)' : 'rgba(0, 184, 217, 0.05)',
+                    border: compressionStatus.includes('✓') ? "1px solid rgba(0, 217, 163, 0.25)" : "1px solid rgba(0, 184, 217, 0.2)",
+                    borderRadius: "6px",
+                    marginBottom: "6px",
+                    fontSize: "10px"
                 }}>
-                    <p style={{ margin: "0 0 1px 0", fontWeight: "bold" }}>STATUS: {compressionStatus}</p>
+                    <p style={{
+                      margin: "0 0 2px 0",
+                      fontWeight: "600",
+                      color: compressionStatus.includes('✓') ? '#00d9a3' : '#00b4d8'
+                    }}>STATUS: {compressionStatus}</p>
                     {compressionProgress && (
-                        <p style={{ margin: 0, fontSize: "6px", color: "#666" }}>
+                        <p style={{ margin: 0, fontSize: "9px", color: "#949ba4" }}>
                             {compressionProgress}
                         </p>
                     )}
@@ -414,14 +421,20 @@ const LibraryBrowser = ({
                     disabled={compressing || Object.values(selectedSampleCheckboxes).every(v => !v)}
                     style={{
                         width: "100%",
-                        padding: "5px",
-                        backgroundColor: compressing ? "#ccc" : "#2196F3",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "3px",
-                        cursor: compressing ? "not-allowed" : "pointer",
-                        fontWeight: "bold",
-                        fontSize: "8px"
+                        padding: "10px",
+                        background: compressing ? "linear-gradient(135deg, #1e1f22 0%, #1a1b1e 100%)" :
+                          "linear-gradient(135deg, #00b4d8 0%, #0096b8 100%)",
+                        color: compressing || Object.values(selectedSampleCheckboxes).every(v => !v) ? "#949ba4" : "#1e1f22",
+                        border: compressing || Object.values(selectedSampleCheckboxes).every(v => !v) ? "1px solid #3d3f45" : "1px solid #00d9a3",
+                        borderRadius: "6px",
+                        cursor: compressing || Object.values(selectedSampleCheckboxes).every(v => !v) ? "not-allowed" : "pointer",
+                        fontWeight: "700",
+                        fontSize: "10px",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.8px",
+                        transition: "all 0.15s cubic-bezier(0.4, 0, 0.2, 1)",
+                        opacity: compressing || Object.values(selectedSampleCheckboxes).every(v => !v) ? 0.5 : 1,
+                        boxShadow: compressing || Object.values(selectedSampleCheckboxes).every(v => !v) ? "none" : "0 2px 8px rgba(0, 180, 216, 0.3)",
                     }}
                 >
                     {compressing ? "COMPRESSING..." : "COMPRESS & SHARE"}

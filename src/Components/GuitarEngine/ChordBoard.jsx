@@ -109,10 +109,21 @@ function ChordBoard({ index, keyBind, chord, strumSpeed = 0.03, mode = 'chord', 
         </button>
       )}
 
-      {/* Mode Toggle */}
-      <button onClick={toggleMode} className={`mode-toggle ${mode}`} title={mode === 'chord' ? 'Switch to single note mode' : 'Switch to chord mode'}>
-        {mode === 'chord' ? '🎸 Chord' : '🎹 Note'}
-      </button>
+      {/* Mode Toggle - Clear Tabs */}
+      <div className="mode-toggle-container">
+        <button
+          onClick={() => mode !== 'chord' && toggleMode()}
+          className={`mode-tab ${mode === 'chord' ? 'active' : ''}`}
+        >
+          CHORD
+        </button>
+        <button
+          onClick={() => mode !== 'note' && toggleMode()}
+          className={`mode-tab ${mode === 'note' ? 'active' : ''}`}
+        >
+          NOTE
+        </button>
+      </div>
 
       {/* Octave Control */}
       <div className="octave-control">
@@ -124,20 +135,16 @@ function ChordBoard({ index, keyBind, chord, strumSpeed = 0.03, mode = 'chord', 
       {/* Unified Speed Slider - only show in chord mode */}
       {mode === 'chord' && (
       <div className="strum-speed-container">
-        <label className="strum-speed-label">
-          <span className="speed-label-text">Play Speed:</span>
-          <span className="speed-value">Fast Strum</span>
-          <input
-            type="range"
-            min="0.01"
-            max="0.5"
-            step="0.01"
-            value={strumSpeed}
-            onChange={handleStrumSpeedChange}
-            className="strum-speed-slider"
-          />
-          <span className="speed-value">Slow Arp</span>
-        </label>
+        <input
+          type="range"
+          min="0.01"
+          max="0.5"
+          step="0.01"
+          value={strumSpeed}
+          onChange={handleStrumSpeedChange}
+          className="strum-speed-slider"
+          title={`Speed: ${strumSpeed < 0.08 ? 'Fast Strum' : 'Slow Arpeggio'}`}
+        />
       </div>
       )}
     </div>

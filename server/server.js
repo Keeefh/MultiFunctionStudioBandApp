@@ -195,8 +195,8 @@ io.on('connection', (socket) => {
       newUserJoined: userId,
     })
 
-    // Send current users list to all in room
-    const usersList = rooms[roomId].clients.map(c => c.userId);
+    // Send current users list to all in room (as objects with username property)
+    const usersList = rooms[roomId].clients.map(c => ({ username: c.userId }));
     io.to(roomId).emit('room-users', usersList);
 
     console.log(`   📢 Broadcast room-joined event to room`)
@@ -296,10 +296,10 @@ io.on('connection', (socket) => {
         console.log(`   Room ${roomId} is now empty, removing it`)
         delete rooms[roomId]
       } else {
-        // Notify remaining users
-        const usersList = rooms[roomId].clients.map(c => c.userId);
+        // Notify remaining users (as objects with username property)
+        const usersList = rooms[roomId].clients.map(c => ({ username: c.userId }));
         io.to(roomId).emit('room-users', usersList);
-        console.log(`   Room ${roomId} users: ${usersList.join(', ')}`)
+        console.log(`   Room ${roomId} users: ${usersList.map(u => u.username).join(', ')}`)
       }
     })
   })

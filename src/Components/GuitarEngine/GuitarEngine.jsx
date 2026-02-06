@@ -433,6 +433,9 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
 
   // Keyboard handler: left-hand chord selection, right-hand strumming
   useEffect(() => {
+    // Only listen for guitar keys when guitar is visible
+    if (!isVisible) return;
+
     const onKeyDown = (e) => {
       // Ignore if user is typing in an input field
       const activeEl = document.activeElement;
@@ -447,7 +450,7 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
       if (idx !== -1) {
         setActiveChordIndex(idx);
         console.log('Active board:', chordBoards[idx].chord, 'mode:', chordBoards[idx].mode, 'oct:', chordBoards[idx].octave);
-        
+
         // If note mode, play immediately (no strum needed)
         if (chordBoards[idx].mode === 'note') {
           playNote(chordBoards[idx].chord, chordBoards[idx].octave);
@@ -468,7 +471,7 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [chordBoards, activeChordIndex, strumDownKey, strumUpKey, audioCtx]);
+  }, [chordBoards, activeChordIndex, strumDownKey, strumUpKey, audioCtx, isVisible]);
 
   // Update chord for a specific board
   const updateChordBoard = (index, newKey, newChord, newStrumSpeed, newMode, newOctave) => {

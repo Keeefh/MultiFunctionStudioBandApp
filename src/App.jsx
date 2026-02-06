@@ -337,6 +337,9 @@ useEffect(() => {
   const buttonKeyIndex = buttonKey.length;  
 
   useEffect(() => {
+    // Only listen for pad keys when PADS instrument is selected
+    if (selectedInstrument !== 'PADS') return;
+
     const onKeyDown = (e) => {
       const active= document.activeElement
       if(active && (active.tagName ==="INPUT" || active.tagName ==="TEXTAREA" || active.isContentEditable)) {
@@ -356,13 +359,13 @@ useEffect(() => {
       void handlePadButtonClick(idx);
       e.preventDefault
     }
-   }  
-  
+   }
+
     window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [buttonKey,handlePadButtonClick]);
+  }, [buttonKey, handlePadButtonClick, selectedInstrument]);
 
   if (!byKit || Object.keys(byKit).length === 0) {
     return <div>Loading...</div>;

@@ -63,11 +63,11 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
         style={{
           position: 'relative',
           width: '100%',
-          height: '400px',
+          height: '350px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden',
+          overflow: 'visible',
         }}
       >
         {/* Left Chevron - Discord style */}

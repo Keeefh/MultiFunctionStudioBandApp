@@ -342,9 +342,15 @@ useEffect(() => {
     selectedInstrumentRef.current = selectedInstrument;
   }, [selectedInstrument]);
 
+  // Pad keyboard handler - only active when PADS is selected
   useEffect(() => {
+    // Don't attach listener at all if not on PADS
+    if (selectedInstrument !== 'PADS') {
+      return; // No listener attached, no cleanup needed
+    }
+
     const onKeyDown = (e) => {
-      // Check ref for current instrument (avoids stale closure)
+      // Double-check with ref (safety net for race conditions)
       if (selectedInstrumentRef.current !== 'PADS') return;
 
       const active = document.activeElement;
@@ -371,7 +377,7 @@ useEffect(() => {
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [buttonKey, handlePadButtonClick]);
+  }, [selectedInstrument, buttonKey, handlePadButtonClick]);
 
   if (!byKit || Object.keys(byKit).length === 0) {
     return <div>Loading...</div>;

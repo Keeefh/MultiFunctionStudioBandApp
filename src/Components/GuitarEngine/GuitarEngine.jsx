@@ -440,9 +440,15 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
   }, [isVisible]);
 
   // Keyboard handler: left-hand chord selection, right-hand strumming
+  // Only active when guitar is visible
   useEffect(() => {
+    // Don't attach listener at all if guitar is not visible
+    if (!isVisible) {
+      return; // No listener attached, no cleanup needed
+    }
+
     const onKeyDown = (e) => {
-      // Check ref for current visibility (avoids stale closure)
+      // Double-check with ref (safety net for race conditions)
       if (!isVisibleRef.current) return;
 
       // Ignore if user is typing in an input field
@@ -479,7 +485,7 @@ function GuitarEngine({ audioCtx, analyser, setCurrentVisualizedSample, setCurre
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [chordBoards, activeChordIndex, strumDownKey, strumUpKey, audioCtx]);
+  }, [isVisible, chordBoards, activeChordIndex, strumDownKey, strumUpKey, audioCtx]);
 
   // Update chord for a specific board
   const updateChordBoard = (index, newKey, newChord, newStrumSpeed, newMode, newOctave) => {

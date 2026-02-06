@@ -12,10 +12,15 @@ let socket = null
 let currentRoomId = null
 let currentUserId = null
 
+// Auto-detect backend URL: use Railway in production, localhost in dev
+const DEFAULT_BACKEND_URL = import.meta.env.PROD
+  ? 'https://multifunctionstudiobandapp-production.up.railway.app'
+  : 'http://localhost:5000'
+
 // ============================================
 // STEP 5: Initialize Socket Connection
 // ============================================
-export function initSocket(backendUrl = 'http://localhost:5000') {
+export function initSocket(backendUrl = DEFAULT_BACKEND_URL) {
   if (socket && socket.connected) {
     console.log('Socket already connected')
     return socket
@@ -45,7 +50,7 @@ export function initSocket(backendUrl = 'http://localhost:5000') {
 // ============================================
 // PURPOSE: Send upload to backend for storage
 // RESEARCH TOPICS: Socket.IO emit, room data structure
-export function joinRoom(roomId, userId, uploadedSamples, backendUrl = 'http://localhost:5000') {
+export function joinRoom(roomId, userId, uploadedSamples, backendUrl = DEFAULT_BACKEND_URL) {
   if (!socket || !socket.connected) {
     console.error('Socket not connected, call initSocket first')
     return

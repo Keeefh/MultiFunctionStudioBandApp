@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import './App.css'
-import './Index.css'
+import './index.css'
 import './Components/PadsSection/PadsSection.css'
 import PadButton from "./Components/PadButton Component/PadButton.jsx";
 import { getAudio } from './Components/Audioloader_Component/Getaudio.jsx'

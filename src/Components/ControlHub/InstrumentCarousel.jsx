@@ -131,7 +131,7 @@ export default function InstrumentCarousel({ selectedInstrument, onInstrumentCha
               y: [0, -20, 0],
             }}
             transition={{
-              duration: 3,
+              duration: 6,
               repeat: Infinity,
               ease: 'easeInOut',
             }}

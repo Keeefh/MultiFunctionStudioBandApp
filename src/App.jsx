@@ -242,6 +242,8 @@ const handlePadButtonClick = async (index) => {
   const audio = new Audio(sampleToPlay.src);
   // allow the audio to be used as a MediaElementSource without CORS tainting
   audio.crossOrigin = 'anonymous';
+  // Apply self-volume so muting yourself silences your own pads locally
+  audio.volume = userVolumes[username] ?? 1;
       const track = audioCtx.createMediaElementSource(audio) //deems  padButton audio  valid in  audioCTX operating system
       track.connect(analyser);
       analyser.connect(audioCtx.destination);
@@ -301,6 +303,7 @@ const handlePadButtonClick = async (index) => {
                     }
              const audio = new Audio(sampleToPlay.src);
              audio.crossOrigin = 'anonymous';
+             audio.volume = userVolumes[username] ?? 1;
              audio.play(); // Still play, but warn about visualization
 
              // Broadcast pad press to other users in the room
@@ -419,8 +422,13 @@ useEffect(() => {
             onUserVolumeChange={(id, val) => setUserVolumes(prev => ({ ...prev, [id]: val }))}
           />
         </div>
-      ) : selectedInstrument === 'GUITAR' ? (
-        <div className="d-flex align-items-center justify-content-center w-100 h-100">
+      ) : (
+        <>
+        {/* GuitarEngine always mounted so socket listener stays alive for remote audio */}
+        <div
+          className="d-flex align-items-center justify-content-center w-100 h-100"
+          style={{ display: selectedInstrument === 'GUITAR' ? 'flex' : 'none' }}
+        >
           <GuitarEngine
             audioCtx={audioCtx}
             analyser={analyser}
@@ -431,10 +439,11 @@ useEffect(() => {
             roomId={roomId}
             username={username}
             userVolumes={userVolumes}
-            isVisible={true}
+            isVisible={selectedInstrument === 'GUITAR'}
           />
         </div>
-      ) : selectedInstrument === 'PADS' ? (
+
+        {selectedInstrument === 'PADS' && (
         <div className="pads-section">
           {/* LEFT: Pad Grid Device */}
           <div id="keyboard-section" className="pads-keyboard-section">
@@ -504,14 +513,18 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      ) : (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: '#fff', fontSize: '18px' }}>
-          Select an instrument from the Control Hub
-        </div>
+        )}
+
+        {selectedInstrument !== 'GUITAR' && selectedInstrument !== 'PADS' && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: '#fff', fontSize: '18px' }}>
+            Select an instrument from the Control Hub
+          </div>
+        )}
+        </>
       )}
-    </div>
+      </div>
     </>
-  ) 
+  )
 }
 
 export default App;

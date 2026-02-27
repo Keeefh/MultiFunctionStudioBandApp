@@ -426,8 +426,13 @@ useEffect(() => {
         <>
         {/* GuitarEngine always mounted so socket listener stays alive for remote audio */}
         <div
-          className="d-flex align-items-center justify-content-center w-100 h-100"
-          style={{ display: selectedInstrument === 'GUITAR' ? 'flex' : 'none' }}
+          style={{
+            display: selectedInstrument === 'GUITAR' ? 'flex' : 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%'
+          }}
         >
           <GuitarEngine
             audioCtx={audioCtx}

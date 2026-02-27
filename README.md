@@ -45,9 +45,20 @@ This app fixes that with real-time instrument sync — when you press a pad or s
 - Beat sequencer / drum machine with step patterns
 - Make instruments more learnable with note modes, chord suggestions, and visual guides
 
-### From Peer-to-Peer → Discord-style Rooms
-Currently the app is peer-to-peer (2 users). The goal is to evolve into a Discord-style experience:
-- Persistent rooms with multiple users (full band sessions)
+### From Peer-to-Peer → SFU Architecture (Discord-style)
+Currently the app uses **P2P (Peer-to-Peer)** — two browsers connect directly to each other. This works for 2 users but breaks down with more.
+
+The goal is to move to an **SFU (Selective Forwarding Unit)** architecture — the same model Discord, Zoom, and Google Meet use. Instead of browsers connecting to each other directly, everyone connects to a central media server that routes audio/events to the right people.
+
+```
+Current (P2P):              Future (SFU):
+User A ←→ User B           User A ─┐
+                            User B ─┤─ Media Server ─→ everyone
+                            User C ─┘
+```
+
+This unlocks:
+- Full band sessions with 5+ users simultaneously
 - Separate instrument channels (guitarist, drummer, bassist)
 - Room history and session recording
 - Friend system and invite links

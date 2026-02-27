@@ -1,5 +1,6 @@
 [build]
 builder = "nixpacks"
+buildCommand = "npm install --omit=dev"
 
 [deploy]
 startCommand = "node server/server.js"
@@ -7,3 +8,6 @@ healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
+
+[nixpacks]
+nodeVersion = "20"

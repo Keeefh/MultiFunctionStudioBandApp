@@ -17,6 +17,9 @@ This app fixes that with real-time instrument sync — when you press a pad or s
 
 ---
 
+## Current Version
+https://multi-function-studio-band-app-wus6.vercel.app/
+
 ## Current Features
 
 ### Instruments

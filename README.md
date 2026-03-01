@@ -1,4 +1,4 @@
-<img width="1919" height="926" alt="image" src="https://github.com/user-attachments/assets/20bf65f3-976c-475d-8385-c47c38d177d0" /># Multi-Function Studio Band App
+
 
 > **Play music together online, in real-time — like a virtual studio session.**
 

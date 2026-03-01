@@ -1,4 +1,4 @@
-# Multi-Function Studio Band App
+<img width="1919" height="926" alt="image" src="https://github.com/user-attachments/assets/20bf65f3-976c-475d-8385-c47c38d177d0" /># Multi-Function Studio Band App
 
 > **Play music together online, in real-time — like a virtual studio session.**
 
@@ -102,6 +102,8 @@ npm run dev
 | G | H | J |
 | V | B | N |
 
+<img width="1919" height="926" alt="image" src="https://github.com/user-attachments/assets/31e877f7-a63b-46d5-9e10-ee80397db397" />
+
 ### Guitar
 | Key | Action |
 |-----|--------|
@@ -112,7 +114,13 @@ npm run dev
 
 > Strum keys and chord keybinds are fully rebindable inside the Guitar panel.
 
+<img width="1916" height="954" alt="image" src="https://github.com/user-attachments/assets/0a694b0b-b811-43f8-9575-41564767f685" />
+
 ---
+### Instrument & Multiplayer HUB
+<img width="1917" height="969" alt="image" src="https://github.com/user-attachments/assets/b12f7d73-d77a-4df0-acfe-f631aa70e1ef" />
+
+
 
 ## Architecture
 
